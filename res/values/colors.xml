@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="layMain_background" >#4e9a60</color>
+	<color name="layMain_offset_background">#99FFCC</color>
+	<color name="font">#555555</color>
+	<color name="font_highlight">#FFFFCC</color>
+	<color name="font_attention">#0033FF</color>
+</resources>
