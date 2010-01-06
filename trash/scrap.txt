@@ -1,0 +1,18 @@
+haring_Service(  328): Scharing_Service started.
+I/ActivityManager(   52): Displayed activity net.wcjj.scharing/.Scheduler: 9958 ms (total 9958 ms)
+W/ActivityManager(   52): Launch timeout has expired, giving up wake lock!
+E/Scharing_Service(  328): java.lang.IndexOutOfBoundsException: Invalid location 7, size is 7
+E/Scharing_Service(  328): 	at java.util.ArrayList.get(ArrayList.java:341)
+E/Scharing_Service(  328): 	at net.wcjj.scharing.Schedule.hasTime(Schedule.java:102)
+E/Scharing_Service(  328): 	at net.wcjj.scharing.Service$TimeTickListener.onReceive(Service.java:158)
+E/Scharing_Service(  328): 	at android.app.ActivityThread$PackageInfo$ReceiverDispatcher$Args.run(ActivityThread.java:740)
+E/Scharing_Service(  328): 	at android.os.Handler.handleCallback(Handler.java:587)
+E/Scharing_Service(  328): 	at android.os.Handler.dispatchMessage(Handler.java:92)
+E/Scharing_Service(  328): 	at android.os.Looper.loop(Looper.java:123)
+E/Scharing_Service(  328): 	at android.app.ActivityThread.main(ActivityThread.java:4338)
+E/Scharing_Service(  328): 	at java.lang.reflect.Method.invokeNative(Native Method)
+E/Scharing_Service(  328): 	at java.lang.reflect.Method.invoke(Method.java:521)
+E/Scharing_Service(  328): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:860)
+E/Scharing_Service(  328): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:618)
+E/Scharing_Service(  328): 	at dalvik.system.NativeStart.main(Native Method)
+
