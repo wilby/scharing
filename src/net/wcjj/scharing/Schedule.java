@@ -25,7 +25,10 @@ import java.util.DuplicateFormatFlagsException;
 import java.util.HashMap;
 
 /**
-*/
+ * Schedule holds the days and times that the ringer mode will be changed.
+ * It gets serialized when Service is closed and deserialized when it starts
+ * again in order to retain the schedule across restarts.
+ */
 public class Schedule implements java.io.Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -58,16 +61,18 @@ public class Schedule implements java.io.Serializable {
 	}		
 	
 	public Schedule() {	
-		//Java can not create a generic array.
-		mWeek = new ArrayList<HashMap<String, Integer>>(7);
-		for(int i = 0; i < 7; i++) {
+	        int nbrDaysInWeek = 7;
+		mWeek = new ArrayList<HashMap<String, Integer>>(nbrDaysInWeek);
+		for(int i = 0; i < nbrDaysInWeek; i++) {
 			mWeek.add(i, new HashMap<String, Integer>());
 		}
 	}
 	
-	public void addRingSchedule(int ringerMode, int dayOfWeek, String startTime) throws IllegalArgumentException {
+	public void addRingSchedule(int ringerMode, int dayOfWeek, String startTime)
+	    throws IllegalArgumentException {
 		if (mWeek.get(dayOfWeek).containsKey(startTime))
-			throw new IllegalArgumentException("A ring mode change is already scheduled for that time");
+			throw new IllegalArgumentException(
+				  "A ring mode change is already scheduled for that time");
 		mWeek.get(dayOfWeek).put(startTime, ringerMode);	
 	}
 
@@ -76,17 +81,20 @@ public class Schedule implements java.io.Serializable {
 			mWeek.get(dayOfWeek).remove(startTime);
 		}
 		else {
-			throw new IllegalArgumentException(startTime + " is not a scheduled ring mode change.");
+			throw new IllegalArgumentException(startTime +
+							   " is not a scheduled ring mode change.");
 		}
 	}
 	
-	public void updateRingSchedule(int dayOfWeek, String startTime, int newRingMode) throws IllegalArgumentException {
+	public void updateRingSchedule(int dayOfWeek, String startTime, int newRingMode)
+	    throws IllegalArgumentException {
 		if(mWeek.get(dayOfWeek).containsKey(startTime)) {			
 			delRingSchedule(dayOfWeek, startTime);
 			addRingSchedule(newRingMode, dayOfWeek, startTime);
 		}	
 		else {
-			throw new IllegalArgumentException(startTime + " is not a scheduled ring mode change.");
+			throw new IllegalArgumentException(startTime + 
+							   " is not a scheduled ring mode change.");
 		}
 	}
 	

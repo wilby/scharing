@@ -77,8 +77,11 @@ public class Scheduler extends Activity {
     	Spinner spRingerMode = (Spinner)findViewById(R.id.spRingerMode);
     	
     	weekday = spWeekday.getSelectedItemPosition();
-    	startTime = tpStartTime.getCurrentHour().toString() + ":" +
-    		tpStartTime.getCurrentMinute().toString();
+    	startTime = String.valueOf(tpStartTime.getCurrentHour()) 
+    				+ ":" 
+					+ (String.valueOf(tpStartTime.getCurrentMinute()).length() == 1 ? "0" 
+							+ tpStartTime.getCurrentMinute().toString() : tpStartTime.getCurrentMinute().toString());
+
     	ringerMode = spRingerMode.getSelectedItemPosition();
     	
     	final ScrollView svMessages = (ScrollView)findViewById(R.id.svMessages); 

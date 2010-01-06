@@ -81,20 +81,12 @@ public class Service extends android.app.Service {
 	}
 	
 	
-	
-	@Override
-	public void onDestroy() {	
-		try {
-			mSaveSchedule();
-			Utilities.scharingNotification(getApplicationContext(), "Scharing shut down, next ringer change will not occur.");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block			
-			Log.e(TAG, e.getMessage());
-		}
-		
+        
+        public void stopService() {
+	    save();
 	}
 	
-	
+   
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -103,7 +95,18 @@ public class Service extends android.app.Service {
 	}
 	
 	
-	
+        public void save() {
+	    try {
+	       	mSaveSchedule();
+	       	Utilities.scharingNotification(getApplicationContext(), 
+	       	"Scharing shut down, next ringer change will not occur.");
+	    } catch (IOException e) {
+	       	// TODO Auto-generated catch block			
+	       	Log.e(TAG, e.getMessage());
+	    }
+        }
+    
+
 	private void mSaveSchedule() throws IOException {
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
@@ -149,12 +152,15 @@ public class Service extends android.app.Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			try {
-				String strTime = Utilities.toScheduleTimeFormat(System.currentTimeMillis());	
+				String strTime = Utilities.toScheduleTimeFormat(
+							   System.currentTimeMillis());	
 				int weekday = Time.WEEK_DAY;
 				if(mSchedule.hasTime(weekday, strTime)) {
-					Utilities.scharingNotification(getApplicationContext(), String.valueOf(weekday) + 
+					Utilities.scharingNotification(getApplicationContext(), 
+								       String.valueOf(weekday) + 
 							strTime);
-					mAudioManager.setRingerMode(mSchedule.getRingerMode(weekday, strTime));
+					mAudioManager.setRingerMode(mSchedule.getRingerMode(
+									      weekday, strTime));
 					
 					mSaveSchedule();
 				}				
