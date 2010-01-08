@@ -20,9 +20,15 @@
 */
 
 package net.wcjj.scharing;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.DuplicateFormatFlagsException;
 import java.util.HashMap;
+
+import android.content.Context;
 
 /**
  * Schedule holds the days and times that the ringer mode will be changed.
@@ -33,6 +39,7 @@ public class Schedule implements java.io.Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	public static final String FILENAME = "schedule.obj";
 	public static final String SCHEDULED_TIME = "SCHEDULED_TIME";
 	public static final String RINGER_MODE = "RINGER_MODE";
 	public static final String SCHEDULE_DOW = "SCHEDULE_DOW";
@@ -105,6 +112,44 @@ public class Schedule implements java.io.Serializable {
 	public int getRingerMode(int dayOfWeek, String startTime) {		
 		return mWeek.get(dayOfWeek).get(startTime);			
 	}
+	
+	public static Schedule loadSchedule(Context context) throws IOException,ClassNotFoundException {
+		FileInputStream fis = null;
+		ObjectInputStream ois = null;
+		
+		try {
+			fis = context.openFileInput(FILENAME);
+			ois = new ObjectInputStream(fis);
+			return (Schedule)ois.readObject();
+		}
+		catch(IOException ex) {
+			throw ex;
+		}
+		catch(ClassNotFoundException ex) {
+			throw ex;
+		}
+		finally {
+			ois.close();
+		}
+	}
+	
+	 public void saveSchedule(Context context) throws IOException {
+	    	
+			FileOutputStream fos = null;
+			ObjectOutputStream oos = null;
+			
+			try {
+				fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+				oos = new ObjectOutputStream(fos);
+				oos.writeObject(this);			
+			} catch (IOException ex) {			
+				throw ex;
+			}		
+			finally {
+				oos.close();
+			}
+	    	
+    }
 	
 	/**
 	 * I could have extened a ListAdapter and created a way to 

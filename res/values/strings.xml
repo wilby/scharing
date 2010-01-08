@@ -16,4 +16,5 @@
     <string name="ring_added">Your new ring schedule has been added.</string>    
     <string name="ring_update">That day/time was already schedule, it has been updated with your changes.</string>
     <string name="message_seperator">\n---------------------\n</string>
+    <string name="schedule_days">Schedules By Day</string>
 </resources>

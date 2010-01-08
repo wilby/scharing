@@ -8,6 +8,8 @@
 		<item value="4" >Thursday</item>
 		<item value="5" >Friday</item>
 		<item value="6" >Saturday</item>
+		<item value="7" >Weekdays</item>
+		<item value="8" >Weekends</item>
 	</string-array>
 
 	<string-array name="mil_hours">

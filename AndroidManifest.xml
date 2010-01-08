@@ -11,11 +11,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="net.wcjj.scharing.SundayListActivity"
+        <activity android:name="net.wcjj.scharing.ScheduleDays"
+        			android:label="@string/schedule_days"
+        >
+        	
+        </activity>
+        <activity android:name="net.wcjj.scharing.DailyScheduleListActivity"
         		  android:label="@string/sunday_listview"
         >
         </activity>
-        		  
+     		  
 		<service 
 			android:name="net.wcjj.scharing.Service"  
 			android:exported="false"	

@@ -29,10 +29,6 @@ import android.media.AudioManager;
 import android.os.IBinder;
 import android.text.format.Time;
 import android.util.Log;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.IOException;
 
 /**
@@ -41,11 +37,10 @@ import java.io.IOException;
 */
 public class Service extends android.app.Service {
 	
-	private String mFilename = "schedule.obj";
+	
 	private AudioManager mAudioManager;
-	public static Schedule mSchedule;
-	public static boolean mEnabled;
-
+	public static Schedule RingSchedule;
+	public static boolean Enabled;
 	private final String TAG = "Scharing_Service";
 	
 	
@@ -57,20 +52,20 @@ public class Service extends android.app.Service {
 		
 		try {
 			if(fileList().length > 0) { 						
-				mLoadSchedule();		
+				RingSchedule = Schedule.loadSchedule(this);		
 			}
 			else {
-				mSchedule = new Schedule();
-				mSaveSchedule();
+				//First run create and persists schedule
+				RingSchedule = new Schedule();
+				RingSchedule.saveSchedule(this);
 			}
 			
 		} 
 		catch (Exception e) {
-			Log.e(TAG, e.getMessage());
+			Log.e(TAG, Log.getStackTraceString(e));
 		}
 		
 	}
-	
 	
 	
 	@Override
@@ -78,12 +73,25 @@ public class Service extends android.app.Service {
 	    Log.i(TAG, TAG + " started.");
 	    // Continue running until it is explicitly stopped.
 	    return START_STICKY;
-	}
+	}	
 	
 	
-        
-        public void stopService() {
-	    save();
+    public void save() {
+    	  try {
+  	       	RingSchedule.saveSchedule(this);
+  	       	Utilities.scharingNotification(getApplicationContext(), 
+  	       	"Scharing shut down, next ringer change will not occur.");
+  	    } catch (IOException e) {
+  	       	// TODO Auto-generated catch block			
+  	       	Log.e(TAG, e.getMessage());
+  	    }
+    }
+	
+	
+    public void stopService() {
+      save();
+      RingSchedule = null;
+      
 	}
 	
    
@@ -95,57 +103,6 @@ public class Service extends android.app.Service {
 	}
 	
 	
-        public void save() {
-	    try {
-	       	mSaveSchedule();
-	       	Utilities.scharingNotification(getApplicationContext(), 
-	       	"Scharing shut down, next ringer change will not occur.");
-	    } catch (IOException e) {
-	       	// TODO Auto-generated catch block			
-	       	Log.e(TAG, e.getMessage());
-	    }
-        }
-    
-
-	private void mSaveSchedule() throws IOException {
-		FileOutputStream fos = null;
-		ObjectOutputStream oos = null;
-		
-		try {
-			fos = openFileOutput(mFilename, MODE_PRIVATE);
-			oos = new ObjectOutputStream(fos);
-			oos.writeObject(mSchedule);			
-		} catch (IOException ex) {			
-			throw ex;
-		}		
-		finally {
-			oos.close();
-		}
-	}
-	
-	
-	
-	private void mLoadSchedule() throws IOException,ClassNotFoundException {
-		FileInputStream fis = null;
-		ObjectInputStream ois = null;
-		
-		try {
-			fis = openFileInput(mFilename);
-			ois = new ObjectInputStream(fis);
-			mSchedule = (Schedule)ois.readObject();
-		}
-		catch(IOException ex) {
-			throw ex;
-		}
-		catch(ClassNotFoundException ex) {
-			throw ex;
-		}
-		finally {
-			ois.close();
-		}
-	}
-	
-	
 	
 	//Respond to system time advancements, occurs every one minute.
 	public class TimeTickListener extends BroadcastReceiver {	
@@ -153,20 +110,20 @@ public class Service extends android.app.Service {
 		public void onReceive(Context context, Intent intent) {
 			try {
 				String strTime = Utilities.toScheduleTimeFormat(
-							   System.currentTimeMillis());	
-				int weekday = Time.WEEK_DAY;
-				if(mSchedule.hasTime(weekday, strTime)) {
+							   System.currentTimeMillis());
+				Time t = new Time();
+				int weekday = t.weekDay;
+				if(RingSchedule.hasTime(weekday, strTime)) {
 					Utilities.scharingNotification(getApplicationContext(), 
 								       String.valueOf(weekday) + 
 							strTime);
-					mAudioManager.setRingerMode(mSchedule.getRingerMode(
-									      weekday, strTime));
-					
-					mSaveSchedule();
+					mAudioManager.setRingerMode(RingSchedule.getRingerMode(
+									      weekday, strTime));					
 				}				
 			}
 			catch(Exception e) {
-				e.printStackTrace();
+				Log.e(TAG, Log.getStackTraceString((e)));
+				
 			}			
 		}
 	}

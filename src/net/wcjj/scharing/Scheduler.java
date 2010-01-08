@@ -21,12 +21,15 @@
 
 package net.wcjj.scharing;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Selection;
-import android.text.Spannable;
-import android.text.method.ScrollingMovementMethod;
+import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ScrollView;
@@ -35,7 +38,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class Scheduler extends Activity {
-    	
+    
+	private final String TAG = "Scharing_Scheduler";
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {    	    	
@@ -66,6 +71,20 @@ public class Scheduler extends Activity {
 	    spRingerMode.setAdapter(adpRingerMode);
     }
     
+    
+    @Override
+	protected void onPause() {
+    	try {
+			Service.RingSchedule.saveSchedule(this);
+		} catch (IOException e) {
+			Log.e(TAG, Log.getStackTraceString(e));
+		}
+		super.onPause();
+	}
+    
+    
+   
+    
     //Listeners
     
     public void btnAddRingerChangeSchedule_Click(View v) {    	
@@ -88,13 +107,13 @@ public class Scheduler extends Activity {
     	final TextView tvMessages = (TextView)findViewById(R.id.tvMessages);
     	String messageSeperator = getString(R.string.message_seperator);
     	
-    	if(!Service.mSchedule.hasTime(weekday, startTime)) {
-    		Service.mSchedule.addRingSchedule(ringerMode, weekday, startTime);
+    	if(!Service.RingSchedule.hasTime(weekday, startTime)) {
+    		Service.RingSchedule.addRingSchedule(ringerMode, weekday, startTime);
     		tvMessages.setTextColor(R.color.font_highlight);    		     		
         	tvMessages.append(getString(R.string.ring_added) + messageSeperator);
     	}
     	else {
-    		Service.mSchedule.updateRingSchedule(weekday, startTime, ringerMode);
+    		Service.RingSchedule.updateRingSchedule(weekday, startTime, ringerMode);
     		tvMessages.setTextColor(R.color.font_attention);
         	tvMessages.append(getString(R.string.ring_update) + messageSeperator);
     	}
@@ -119,15 +138,12 @@ public class Scheduler extends Activity {
 				tvMessages.scrollTo(0, tvMessages.getBottom());
 				
 			}
-		});*/
-		
-
-    	
+		});*/  	
     	
     }
     
-    public void btnViewSchedules_Click(View v) {
-    	Intent i = new Intent(this, SundayListActivity.class);
+    public void btnViewSchedules_Click(View v) {    	
+    	Intent i = new Intent(this, ScheduleDays.class);
     	startActivity(i);    	
     }
     

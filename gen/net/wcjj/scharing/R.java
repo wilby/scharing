@@ -31,6 +31,14 @@ public final class R {
         public static final int CheckBox02=0x7f07000c;
         public static final int btnAddRingerChangeSchedule=0x7f070005;
         public static final int btnViewSchedules=0x7f070006;
+        public static final int imgBtnAll=0x7f070014;
+        public static final int imgBtnFriday=0x7f070012;
+        public static final int imgBtnMonday=0x7f07000e;
+        public static final int imgBtnSaturday=0x7f070013;
+        public static final int imgBtnSunday=0x7f07000d;
+        public static final int imgBtnThursday=0x7f070011;
+        public static final int imgBtnTuesday=0x7f07000f;
+        public static final int imgBtnWednesday=0x7f070010;
         public static final int layMain=0x7f070000;
         public static final int spRingerMode=0x7f070004;
         public static final int spWeekday=0x7f070002;
@@ -46,6 +54,7 @@ public final class R {
         public static final int lv_container=0x7f030000;
         public static final int main=0x7f030001;
         public static final int main_item_two_line_row=0x7f030002;
+        public static final int schedules_days=0x7f030003;
     }
     public static final class string {
         public static final int add_time=0x7f060002;
@@ -62,6 +71,7 @@ public final class R {
         public static final int ring_added=0x7f06000d;
         public static final int ring_update=0x7f06000e;
         public static final int ringermode_prompt=0x7f060006;
+        public static final int schedule_days=0x7f060010;
         public static final int sunday_listview=0x7f06000b;
         public static final int weekday_prompt=0x7f060003;
     }

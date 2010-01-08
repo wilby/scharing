@@ -34,7 +34,7 @@ public class Utilities {
 	private static final String RINGER_MODE_CHANGE_NOTIFY_TAG = "RINGER MODE CHANGED";
 	
 	public static void scharingNotification(Context context, String message) {
-		NotificationManager nm = (NotificationManager)context.getSystemService(context.NOTIFICATION_SERVICE);
+		NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 		
 		Notification n = new Notification(R.drawable.notification_icon, 
 											"Scharing Notification", 
@@ -60,5 +60,5 @@ public class Utilities {
 	
 	public static final String[] RINGER_MODES_TEXT = {"Silent", "Vibrate", "Ring"};
 
-	public static final String[] DAYS_OF_WEEK_TEXT = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+	public static final String[] DAYS_OF_WEEK_TEXT = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Weekdays", "Weekend"};
 }
