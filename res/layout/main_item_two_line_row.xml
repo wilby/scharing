@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout
-     xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="fill_parent"
-     android:layout_height="wrap_content"
-     android:orientation="vertical">
- 	<TableRow>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:id="@+id/lvrow" 
+			  android:stretchColumns="*"
+		      android:layout_width="fill_parent" 
+		      android:layout_height="wrap_content" 
+		      android:gravity="center"
+>
+ 	
 	 	<TextView 	
 		android:id="@+id/text0" 
 		android:layout_width="wrap_content" 
@@ -34,6 +37,6 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
 		    android:gravity="right" 
-		/>
-	</TableRow>
-</TableLayout>
+		/>	
+	
+</LinearLayout>
