@@ -3,8 +3,7 @@
     android:orientation="horizontal" 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/layMain" 
-    android:background="@color/layMain_background" 
+    android:id="@+id/layMain"    
     android:padding="20dip"
 >
 	
@@ -73,18 +72,15 @@
 				 />
    	</TableRow>
    	<TableRow>
-   		 <ScrollView android:id="@+id/svMessages"
-							android:background="@color/layMain_offset_background"
+   		 <ScrollView android:id="@+id/svMessages"							
 							android:layout_width="wrap_content" 
 							android:layout_height="75dip" 
 				>
-				<TextView android:id="@+id/tvMessages" 
-						  android:textSize="15sp"				  	   
+				<TextView android:id="@+id/tvMessages"						  			  	   
 						  android:layout_width="wrap_content" 
 						  android:layout_height="wrap_content" 
 						  android:text=""
 						  android:gravity="center_horizontal" 
-						  
 						   
 				    />
 			</ScrollView>

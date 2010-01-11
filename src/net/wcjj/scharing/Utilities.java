@@ -30,8 +30,20 @@ import android.text.format.Time;
 
 public class Utilities {
 	
+	
+	
 	private static final int RINGER_MODE_CHANGE_NOTIFY_ID = 1;
 	private static final String RINGER_MODE_CHANGE_NOTIFY_TAG = "RINGER MODE CHANGED";
+	//Sunday - Saturday = 0-6, The following constants match the 
+	//positions these selections occur in Scheduler.java's main.xml dropdown for days.
+	public static final int WEEKDAYS = 7; 
+	public static final int WEEKENDS = 8;
+	public static final String[] RINGER_MODES_TEXT = {"Silent", "Vibrate", "Ring"};
+	public static final String[] DAYS_OF_WEEK_TEXT = {
+		"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
+		"Friday", "Saturday", "Weekdays", "Weekend"
+	};
+	
 	
 	public static void scharingNotification(Context context, String message) {
 		NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -50,6 +62,8 @@ public class Utilities {
 	
 	}
 	
+	
+	
 	public static String toScheduleTimeFormat(long systemTimeInMillis) {
 		Time t = new Time();		
 		t.set(systemTimeInMillis);
@@ -58,7 +72,7 @@ public class Utilities {
 		return String.valueOf(t.hour) + ":" + (minutes.length() == 1 ? "0" + minutes : minutes);	
 	}
 	
-	public static final String[] RINGER_MODES_TEXT = {"Silent", "Vibrate", "Ring"};
-
-	public static final String[] DAYS_OF_WEEK_TEXT = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Weekdays", "Weekend"};
+	
+	
+	
 }

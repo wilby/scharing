@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="greeting">Scharing scheduler interface!</string>
-    <string name="app_name">Scharing</string>
+	<string name="app_name">Scharing</string>
     <string name="add_time">Add ringer mode change schedule</string>
-    <string name="weekday_prompt">-Select Day-</string>
-    <string name="hour_prompt">-Select Hour-</string>
-    <string name="minute_prompt">-Select Minute-</string>
-    <string name="ringermode_prompt">-Ringer Mode-</string>
-    <string name="btnAddRingerChangeSchedule_text">Add Schedule</string>
+    <string name="bootstrap_message">Scharing service has been started</string>
+	<string name="btnAddRingerChangeSchedule_text">Add Schedule</string>
     <string name="btnAddRingerChangeSchedule_hint">Select day, hour, minute and ringer mode then click Add Schedule</string>
     <string name="btnViewSchedules_text">View Schedules</string>
     <string name="btnViewSchedules_hint">Click to open a list of days schedules</string>
-    <string name="sunday_listview">Sunday\'s Schedule</string>
     <string name="day_lv_tag">DAY_LV</string>
-    <string name="ring_added">Your new ring schedule has been added.</string>    
-    <string name="ring_update">That day/time was already schedule, it has been updated with your changes.</string>
+    <string name="greeting">Scharing scheduler interface!</string>    
+    <string name="hour_prompt">-Select Hour-</string>
     <string name="message_seperator">\n---------------------\n</string>
-    <string name="schedule_days">Schedules By Day</string>
+    <string name="minute_prompt">-Select Minute-</string>    
+    <string name="ring_added">Your new ring schedule has been added.</string>
+    <string name="ring_mode_changed">Ringer mode changed to </string>    
+    <string name="ring_update">That day/time was already schedule, it has been updated with your changes.</string>    
+    <string name="ringermode_prompt">-Ringer Mode-</string>    
+    <string name="schedule_days">Schedules By Day</string>    
+    <string name="service_shutdown_warning">Scharing shut down, next ringer change will not occur.</string>
+    <string name="service_starting">Scharing service starting</string>    
+    <string name="weekday_prompt">-Select Day-</string>
 </resources>

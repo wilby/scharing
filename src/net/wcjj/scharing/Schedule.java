@@ -37,43 +37,48 @@ import android.content.Context;
  */
 public class Schedule implements java.io.Serializable {
 	
+	
+	
+	/**
+	*An array of HashMaps who's indexes mimic the days of the week 
+	*as set up in class android.text.format.Time. Each 
+	*array index is the day it represents.
+	*@example:
+	*	0 = Sunday, 1 = Monday etc....
+	*/
+	private ArrayList<HashMap<String, Integer>> mWeek ;
 	private static final long serialVersionUID = 1L;
+		
+	
 	
 	public static final String FILENAME = "schedule.obj";
 	public static final String SCHEDULED_TIME = "SCHEDULED_TIME";
 	public static final String RINGER_MODE = "RINGER_MODE";
 	public static final String SCHEDULE_DOW = "SCHEDULE_DOW";
 	
-	/**
-	*An array of HashMaps that mimic the days of the week 
-	*as set up in class android.text.format.Time. Each 
-	*array index is the day it represents
-	*@example:
-	*	0 = Sunday, 1 = Monday etc....
-	*/
-	private ArrayList<HashMap<String, Integer>> mWeek ;
-	/**
-	 * @param startTime - The time to change the ring mode. 
-	 * @param ringerMode - The int representing the mode to change to. 
-	 * These are static constants in the AudioManager class
-	 * @param dayOfWeek - The int representing the day of the week in the Time class.
-	*/
+	
 	
 	public ArrayList<HashMap<String, Integer>> getWeek() {
 		return mWeek;		
 	}
 	
+	
+	
 	public HashMap<String, Integer> getDay(int dayOfWeek) {
 		return mWeek.get(dayOfWeek);
-	}		
+	}
+	
+	
 	
 	public Schedule() {	
-	        int nbrDaysInWeek = 7;
+        int nbrDaysInWeek = 7;
 		mWeek = new ArrayList<HashMap<String, Integer>>(nbrDaysInWeek);
 		for(int i = 0; i < nbrDaysInWeek; i++) {
 			mWeek.add(i, new HashMap<String, Integer>());
 		}
 	}
+	
+	
 	
 	public void addRingSchedule(int ringerMode, int dayOfWeek, String startTime)
 	    throws IllegalArgumentException {
@@ -82,6 +87,8 @@ public class Schedule implements java.io.Serializable {
 				  "A ring mode change is already scheduled for that time");
 		mWeek.get(dayOfWeek).put(startTime, ringerMode);	
 	}
+	
+	
 
 	public void delRingSchedule(int dayOfWeek, String startTime) throws IllegalArgumentException {
 		if(mWeek.get(dayOfWeek).containsKey(startTime)) {
@@ -92,6 +99,8 @@ public class Schedule implements java.io.Serializable {
 							   " is not a scheduled ring mode change.");
 		}
 	}
+	
+	
 	
 	public void updateRingSchedule(int dayOfWeek, String startTime, int newRingMode)
 	    throws IllegalArgumentException {
@@ -105,13 +114,19 @@ public class Schedule implements java.io.Serializable {
 		}
 	}
 	
+	
+	
 	public boolean hasTime(int dayOfWeek, String startTime) {
 		return mWeek.get(dayOfWeek).containsKey(startTime);
 	}
 	
+	
+	
 	public int getRingerMode(int dayOfWeek, String startTime) {		
 		return mWeek.get(dayOfWeek).get(startTime);			
 	}
+	
+	
 	
 	public static Schedule loadSchedule(Context context) throws IOException,ClassNotFoundException {
 		FileInputStream fis = null;
@@ -133,6 +148,8 @@ public class Schedule implements java.io.Serializable {
 		}
 	}
 	
+	
+	
 	 public void saveSchedule(Context context) throws IOException {
 	    	
 			FileOutputStream fos = null;
@@ -150,6 +167,8 @@ public class Schedule implements java.io.Serializable {
 			}
 	    	
     }
+	 
+	 
 	
 	/**
 	 * I could have extened a ListAdapter and created a way to 
@@ -178,5 +197,8 @@ public class Schedule implements java.io.Serializable {
 		
 		return list;
 	}
+	
+	
+	
 }
 

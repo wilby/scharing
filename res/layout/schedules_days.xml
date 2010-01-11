@@ -65,13 +65,7 @@
   			android:layout_height="wrap_content"
   			android:onClick="btn_Click"
 		/>
-  		<Button
-  			android:text="Entire Week" 
-  			android:id="@+id/imgBtnAll"
-  			android:layout_width="wrap_content"
-  			android:layout_height="wrap_content"
-  			android:onClick="btn_Click"  		
-		/>	
+  			
   	</TableRow>
 </TableLayout>
 </LinearLayout>

@@ -38,6 +38,7 @@ import java.io.IOException;
 public class Service extends android.app.Service {
 	
 	
+	
 	private AudioManager mAudioManager;
 	public static Schedule RingSchedule;
 	public static boolean Enabled;
@@ -51,6 +52,8 @@ public class Service extends android.app.Service {
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 		
 		try {
+			//schedule is the only file we create so if its not there 
+			//then create one and shelve it.
 			if(fileList().length > 0) { 						
 				RingSchedule = Schedule.loadSchedule(this);		
 			}
@@ -68,6 +71,7 @@ public class Service extends android.app.Service {
 	}
 	
 	
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 	    Log.i(TAG, TAG + " started.");
@@ -76,11 +80,12 @@ public class Service extends android.app.Service {
 	}	
 	
 	
+	
     public void save() {
     	  try {
   	       	RingSchedule.saveSchedule(this);
   	       	Utilities.scharingNotification(getApplicationContext(), 
-  	       	"Scharing shut down, next ringer change will not occur.");
+  	       	getString(R.string.service_shutdown_warning));
   	    } catch (IOException e) {
   	       	// TODO Auto-generated catch block			
   	       	Log.e(TAG, e.getMessage());
@@ -88,6 +93,7 @@ public class Service extends android.app.Service {
     }
 	
 	
+    
     public void stopService() {
       save();
       RingSchedule = null;
@@ -109,17 +115,19 @@ public class Service extends android.app.Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			try {
+				long millis = System.currentTimeMillis();
 				String strTime = Utilities.toScheduleTimeFormat(
-							   System.currentTimeMillis());
+							   millis);
 				Time t = new Time();
+				t.set(millis);
 				int weekday = t.weekDay;
-				if(RingSchedule.hasTime(weekday, strTime)) {
-					Utilities.scharingNotification(getApplicationContext(), 
-								       String.valueOf(weekday) + 
-							strTime);
+				if(RingSchedule.hasTime(weekday, strTime)) {					
 					mAudioManager.setRingerMode(RingSchedule.getRingerMode(
-									      weekday, strTime));					
-				}				
+									      weekday, strTime));
+					Utilities.scharingNotification(getApplicationContext(), 
+						       getString(R.string.ring_mode_changed) + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+				}
+				t = null;
 			}
 			catch(Exception e) {
 				Log.e(TAG, Log.getStackTraceString((e)));
@@ -127,8 +135,10 @@ public class Service extends android.app.Service {
 			}			
 		}
 	}
+	
+	
 
-} // End class
+}
 
 
 

@@ -9,13 +9,13 @@
 >
  	
 	 	<TextView 	
-		android:id="@+id/text0" 
+		android:id="@+id/txtId" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content"
 		android:visibility="invisible" 
 		/>		
 	 
-	    <TextView android:id="@+id/text1"       
+	    <TextView android:id="@+id/txtTime"       
 	         android:layout_width="wrap_content"
 	         android:layout_height="wrap_content"
 	         android:width="100dp" 
@@ -24,7 +24,7 @@
                  
 	         
 		<TextView		
-			android:id="@+id/text2" 
+			android:id="@+id/txtRingMode" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:width="100dp" 

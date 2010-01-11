@@ -1,17 +1,48 @@
+/**
+* 	 Scharing - Allows you to set a ring, vibrate and silence shedule for your android device.
+*    Copyright (C) 2009  Wilby C. Jackson Jr.
+*
+*    This program is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*
+*    This program is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License along
+*    with this program; if not, write to the Free Software Foundation, Inc.,
+*    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*    
+*    Contact: jacksw02-at-gmail-dot-com
+*/
+
 package net.wcjj.scharing;
+
+import java.io.IOException;
 
 import android.app.ListActivity;
 import android.os.Bundle;
-import android.text.format.Time;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 
 public class DailyScheduleListActivity extends ListActivity {
 	
 	public static int WEEK_DAY;
+	private SimpleAdapter mSa;
+	private final String TAG = "Scharing_DailyScheduleListActivity";
+	
+	
 	
 	@Override
     public void onCreate(Bundle bundle) {
@@ -19,32 +50,85 @@ public class DailyScheduleListActivity extends ListActivity {
        setContentView(R.layout.lv_container);    
        
        this.setTitle(Utilities.DAYS_OF_WEEK_TEXT[WEEK_DAY]);
-       SimpleAdapter saSunday = new SimpleAdapter( 
+       mSa = new SimpleAdapter( 
 				this, 
 				Service.RingSchedule.toSimpleAdapterMap(DailyScheduleListActivity.WEEK_DAY),
 				R.layout.main_item_two_line_row,
 				new String[] {Schedule.SCHEDULE_DOW ,Schedule.SCHEDULED_TIME, Schedule.RINGER_MODE},
-				new int[] { R.id.text0, R.id.text1, R.id.text2 }  );
+				new int[] { R.id.txtId, R.id.txtTime, R.id.txtRingMode }  );
        
-       setListAdapter(saSunday);
+       setListAdapter(mSa);      
     }
+	
+	
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.daily_schedule_lv_menu, menu);
+		return true;
+	}
+	
+	
+	
+	public void mBtnDelete_Click() {		
+		
+		final int CHECKBOX_INDEX = 3;
+		final int TIME_TEXTBOX_INDEX = 1;
+		final int nbrViewsInRow = 4;
+		
+		LinearLayout row = null;
+		String time = null;
+		CheckBox cb = null;
+		ListView lv = getListView();
+		int rowCount = lv.getCount();
+		int childCount = -1;
+		
+		//iterate over the views in the ListView
+		//and remove items from the schedule that 
+		//have been checked by the user 
+		//this also removes the selected times from Services 
+		//schedule object	
+		for(int i = 0; i < rowCount; i++) {
+			row = (LinearLayout)lv.getChildAt(i);		
+			if (row != null) {
+				childCount = row.getChildCount();
+				if(childCount == nbrViewsInRow) {
+					cb = (CheckBox)row.getChildAt(CHECKBOX_INDEX);
+					if (cb.isChecked()) {
+						time = ((TextView)row.getChildAt(TIME_TEXTBOX_INDEX)).getText().toString();
+						Service.RingSchedule.delRingSchedule(WEEK_DAY, time);
+						row.setVisibility(ListView.GONE);
+					}				
+				}
+			}
+		}		
+		lv.invalidate();
+		//Save the changes to disk for persistence.
+		try {
+			Service.RingSchedule.saveSchedule(this);
+		}
+		catch(IOException e) {
+			Log.e(TAG, Log.getStackTraceString(e));
+		}
+		
+	}
+	
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		//TODO: Implement a mass delete option ex. Mon-Fri for a selected time
+		switch (item.getItemId()) {
+			case R.id.mBtnDelete:
+				mBtnDelete_Click();
+				return true;
+		
+		}
+		return false;
+	}
+	
 
-  /*  @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-      boolean result = super.onCreateOptionsMenu(menu);
-      menu.add(0, ADD_ITEM_ID, R.string.add_item );
-      return result;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(Menu.Item item) {
-        switch ( item.getId() ) {
-          case ADD_ITEM_ID:
-				addItem();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
-
-
+	
 }
