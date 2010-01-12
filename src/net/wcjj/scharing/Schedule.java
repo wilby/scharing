@@ -26,7 +26,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
 
 import android.content.Context;
 
@@ -186,14 +189,20 @@ public class Schedule implements java.io.Serializable {
 		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String,String>>();
 		ArrayList<HashMap<String, Integer>> week = mWeek;		
 		
-		for (int j = 0; j < week.get(day).size(); j++) {
-			String key = (String) week.get(day).keySet().toArray()[j];
-			HashMap<String, String> tempMap = new HashMap<String, String>(3);
+		//Hashmaps are not sorted, utilizing collection sorting so that 
+		//items are displayed in time asending order in the days listview.
+		Vector<String> v = new Vector<String>(week.get(day).keySet());
+	    Collections.sort(v);
+	    Iterator<String> it = v.iterator();
+	    
+	    while (it.hasNext()) {
+	       String key =  (String)it.next();
+	       HashMap<String, String> tempMap = new HashMap<String, String>(3);
 			tempMap.put(SCHEDULE_DOW, String.valueOf(day));
 			tempMap.put(SCHEDULED_TIME, key);
 			tempMap.put(RINGER_MODE, ringModes[week.get(day).get(key)]);
 			list.add(tempMap);			
-		}
+	    }	
 		
 		return list;
 	}

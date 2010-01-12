@@ -51,7 +51,7 @@ public class DailyScheduleListActivity extends ListActivity {
        
        this.setTitle(Utilities.DAYS_OF_WEEK_TEXT[WEEK_DAY]);
        mSa = new SimpleAdapter( 
-				this, 
+				this,
 				Service.RingSchedule.toSimpleAdapterMap(DailyScheduleListActivity.WEEK_DAY),
 				R.layout.main_item_two_line_row,
 				new String[] {Schedule.SCHEDULE_DOW ,Schedule.SCHEDULED_TIME, Schedule.RINGER_MODE},
