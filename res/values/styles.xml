@@ -14,16 +14,32 @@
 		<item name="android:background">@color/widget_background</item>
 	</style>
 	
-	<style name="sharing:spinnerItemStyle"  >
-		<item name="android:color">@color/font_color_for_light_back</item>
+	<style name="sharing:spinnerStyle" parent="@android:style/Widget.Spinner" >
+		<item name="android:background">@color/window_background_alt</item>
 	</style>
+	
+	<style name="sharing:spinnerItemStyle"  >
+		
+	</style>
+	
+	<style name="sharing:spinnerDropDownItemStyle">
+		<item name="android:color">@color/window_background</item>
+		<item name="android:background">@color/window_background_alt</item>>
+	</style>
+	
+	<style name="sharing:windowTitleStyle"  >
+		<item name="android:background">@color/window_background_alt</item>
+	</style>
+	
 	
 	<style name="scharing:ScharingTheme" parent="android:Theme.Light" >
 		<item name="android:textColor">@color/font_color_for_dark_back</item>
 		<item name="android:windowBackground">@color/window_background</item>
 		<item name="android:scrollViewStyle">@style/sharing:scrollViewStyle</item>
 		<item name="android:textViewStyle">@style/sharing:textViewStyle</item>		
-		<item name="android:spinnerItemStyle">@style/sharing:spinnerItemStyle</item>		
+		<item name="android:spinnerItemStyle">@style/sharing:spinnerItemStyle</item>
+		<item name="android:spinnerDropDownItemStyle">@style/sharing:spinnerDropDownItemStyle</item>
+		<item name="android:windowTitleStyle">@style/sharing:windowTitleStyle</item>		
 	</style>
 
 </resources>

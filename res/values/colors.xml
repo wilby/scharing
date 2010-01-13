@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="font_color_for_light_back">#734f2f</color>	
-	<color name="font_color_for_dark_back">#f2e6ce</color>
-	<color name="widget_background">#d9c589</color>
-	<color name="window_background" >#593a27</color>
-	<color name="window_background_alt">#f2eda7</color>	
+	<color name="font_color_for_light_back">#99734f2f</color>	
+	<color name="font_color_for_dark_back">#99f2e6ce</color>
+	<color name="widget_background">#99d9c589</color>
+	<color name="window_background" >#99593a27</color>
+	<color name="window_background_alt">#99f2eda7</color>	
+	<color name="lv_cache_back">#00000000</color>
 </resources>

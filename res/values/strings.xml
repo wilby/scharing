@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Scharing</string>
+	<string name="app_name">Scharing - Schedule-A-Ring</string>
     <string name="add_time">Add ringer mode change schedule</string>
     <string name="bootstrap_message">Scharing service has been started</string>
 	<string name="btnAddRingerChangeSchedule_text">Add Schedule</string>

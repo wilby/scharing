@@ -10,7 +10,7 @@
 				android:layout_width="fill_parent"
 		    	android:layout_height="fill_parent" 
 		    	android:prompt="@string/weekday_prompt"	
-		    	android:choiceMode="multipleChoice" 	    	  
+		    	android:cacheColorHint="@color/lv_cache_back" 	    	  
    	/>
    	
 </LinearLayout>

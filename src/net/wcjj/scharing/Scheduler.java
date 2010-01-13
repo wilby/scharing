@@ -172,7 +172,7 @@ public class Scheduler extends Activity {
     
     
     public void btnViewSchedules_Click(View v) {    	
-    	Intent i = new Intent(this, ScheduleDays.class);
+    	Intent i = new Intent(this, ScheduleWeek.class);
     	startActivity(i);    	
     }    
 }
