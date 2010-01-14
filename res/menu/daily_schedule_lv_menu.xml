@@ -9,7 +9,7 @@ android:icon="@drawable/eject" />
  -->
 <item android:id="@+id/mBtnDelete"
 android:orderInCategory="2"
-android:title="Delete Selected Schedule Items" 
+android:title="@string/menu_delete" 
 android:onClick="mBtnDelete_Click"
 />
 

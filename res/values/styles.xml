@@ -6,25 +6,26 @@
 	</style>
 	
 	<style name="sharing:textViewStyle" parent="@android:style/Widget.TextView" >		
-		<item name="android:textColor">@color/font_color_for_light_back</item>	
+		<item name="android:textColor">@color/widget_background</item>	
 		
 	</style>
 	
-	<style name="sharing:view"  >
-		<item name="android:background">@color/widget_background</item>
-	</style>
-	
+
 	<style name="sharing:spinnerStyle" parent="@android:style/Widget.Spinner" >
-		<item name="android:background">@color/window_background_alt</item>
+		
 	</style>
 	
 	<style name="sharing:spinnerItemStyle"  >
-		
+		<item name="android:textColor">@color/font_black</item>	
 	</style>
 	
-	<style name="sharing:spinnerDropDownItemStyle">
-		<item name="android:color">@color/window_background</item>
-		<item name="android:background">@color/window_background_alt</item>>
+	<style name="sharing:spinnerDropDownItemStyle">		
+		<item name="android:background">@color/window_background</item>
+		<item name="android:padding">10dip</item>
+		<item name="android:height">20dip</item>
+		<item name="android:windowTitleStyle">
+			<item name="android:background">@color/window_background_alt</item>
+		</item>
 	</style>
 	
 	<style name="sharing:windowTitleStyle"  >
@@ -33,7 +34,7 @@
 	
 	
 	<style name="scharing:ScharingTheme" parent="android:Theme.Light" >
-		<item name="android:textColor">@color/font_color_for_dark_back</item>
+		<item name="android:textColor">@color/font_white</item>
 		<item name="android:windowBackground">@color/window_background</item>
 		<item name="android:scrollViewStyle">@style/sharing:scrollViewStyle</item>
 		<item name="android:textViewStyle">@style/sharing:textViewStyle</item>		

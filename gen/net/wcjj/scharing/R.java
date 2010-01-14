@@ -17,12 +17,14 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
+        public static final int font_black=0x7f050003;
         public static final int font_color_for_dark_back=0x7f050001;
         public static final int font_color_for_light_back=0x7f050000;
-        public static final int lv_cache_back=0x7f050005;
-        public static final int widget_background=0x7f050002;
-        public static final int window_background=0x7f050003;
-        public static final int window_background_alt=0x7f050004;
+        public static final int font_white=0x7f050002;
+        public static final int lv_cache_back=0x7f050007;
+        public static final int widget_background=0x7f050004;
+        public static final int window_background=0x7f050005;
+        public static final int window_background_alt=0x7f050006;
     }
     public static final class drawable {
         public static final int icon=0x7f020000;
@@ -72,6 +74,7 @@ public final class R {
         public static final int day_lv_tag=0x7f060007;
         public static final int greeting=0x7f060008;
         public static final int hour_prompt=0x7f060009;
+        public static final int menu_delete=0x7f060014;
         public static final int message_seperator=0x7f06000a;
         public static final int minute_prompt=0x7f06000b;
         public static final int ring_added=0x7f06000c;
@@ -84,13 +87,12 @@ public final class R {
         public static final int weekday_prompt=0x7f060013;
     }
     public static final class style {
-        public static final int scharing_ScharingTheme=0x7f070007;
+        public static final int scharing_ScharingTheme=0x7f070006;
         public static final int sharing_scrollViewStyle=0x7f070000;
-        public static final int sharing_spinnerDropDownItemStyle=0x7f070005;
-        public static final int sharing_spinnerItemStyle=0x7f070004;
-        public static final int sharing_spinnerStyle=0x7f070003;
+        public static final int sharing_spinnerDropDownItemStyle=0x7f070004;
+        public static final int sharing_spinnerItemStyle=0x7f070003;
+        public static final int sharing_spinnerStyle=0x7f070002;
         public static final int sharing_textViewStyle=0x7f070001;
-        public static final int sharing_view=0x7f070002;
-        public static final int sharing_windowTitleStyle=0x7f070006;
+        public static final int sharing_windowTitleStyle=0x7f070005;
     }
 }
