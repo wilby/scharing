@@ -30,8 +30,8 @@ import android.util.Log;
 
 /** 
  *ServiceBootStrapper listens for the BOOT_COMPLETED 
- *broadcast and starts net.wcjj.Scharing.Service when 
- *anroid boot process is completed. *
+ *broadcast and starts net.wcjj.scharing.Service when 
+ *the android boot process is completed. 
  */
 public class ServiceBootStrapper extends BroadcastReceiver {
 	

@@ -26,7 +26,6 @@ import java.io.IOException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -52,15 +51,9 @@ public class Scheduler extends Activity {
         Intent servIntent = new Intent(this, net.wcjj.scharing.Service.class);
     	startService(servIntent);   
     	 	
-    	InitializeUI();
-    }
-    
-    
-    
-    public void InitializeUI() {
     	InitializeSpinners();
     }
-    
+ 
     
     
     public void InitializeSpinners() {
@@ -70,11 +63,8 @@ public class Scheduler extends Activity {
     	
     	adpWeekday.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	    spWeekday.setAdapter(adpWeekday);	    
-	    //Make the selected day default to today
-    	Time t = new Time();    	
-    	spWeekday.setSelection(t.weekDay);
-	    
-	    Spinner spRingerMode = (Spinner) findViewById(R.id.spRingerMode);
+	       	
+    	Spinner spRingerMode = (Spinner) findViewById(R.id.spRingerMode);
     	ArrayAdapter<CharSequence> adpRingerMode = ArrayAdapter.createFromResource(
     	            this, R.array.ringer_mode, android.R.layout.simple_spinner_item);
     	adpRingerMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -82,11 +72,12 @@ public class Scheduler extends Activity {
     }
     
     
+    
     @Override
 	protected void onPause() {
     	//Make sure that user changes are saved when the UI is lost
     	try {
-			Service.RingSchedule.saveSchedule(this);
+			Service.getRingSchedule().saveSchedule(this);
 		} catch (IOException e) {
 			Log.e(TAG, Log.getStackTraceString(e));
 		}
@@ -94,20 +85,23 @@ public class Scheduler extends Activity {
 	}
     
     
+    
     private void addSchedules(int ringerMode, int weekday, String startTime, TextView tvMessages) {
-    	if(Service.RingSchedule.hasTime(weekday, startTime)) {
+    	if(Service.getRingSchedule().hasTime(weekday, startTime)) {
     		updateSchedules(ringerMode, weekday, startTime, tvMessages);
     	}
     	else {
 	    	String messageSeperator = getString(R.string.message_seperator);
-	    	Service.RingSchedule.addRingSchedule(ringerMode, weekday, startTime);			  		
+	    	Service.getRingSchedule().addRingSchedule(ringerMode, weekday, startTime);			  		
 	    	tvMessages.append(getString(R.string.ring_added) + messageSeperator);
     	}
     }
     
+    
+    
     private void updateSchedules (int ringerMode, int weekday, String startTime, TextView tvMessages) {
     	String messageSeperator = getString(R.string.message_seperator);
-    	Service.RingSchedule.updateRingSchedule(weekday, startTime, ringerMode);		
+    	Service.getRingSchedule().updateRingSchedule(weekday, startTime, ringerMode);		
     	tvMessages.append(getString(R.string.ring_update) + messageSeperator);
     }
    

@@ -52,7 +52,7 @@ public class DailyScheduleListActivity extends ListActivity {
        this.setTitle(Utilities.DAYS_OF_WEEK_TEXT[WEEK_DAY]);
        mSa = new SimpleAdapter( 
 				this,
-				Service.RingSchedule.toSimpleAdapterMap(DailyScheduleListActivity.WEEK_DAY),
+				Service.getRingSchedule().toSimpleAdapterMap(DailyScheduleListActivity.WEEK_DAY),
 				R.layout.main_item_two_line_row,
 				new String[] {Schedule.SCHEDULE_DOW ,Schedule.SCHEDULED_TIME, Schedule.RINGER_MODE},
 				new int[] { R.id.txtId, R.id.txtTime, R.id.txtRingMode }  );
@@ -73,10 +73,11 @@ public class DailyScheduleListActivity extends ListActivity {
 	
 	
 	public void mBtnDelete_Click() {		
+		Schedule ringSchedule = Service.getRingSchedule();
 		
 		final int CHECKBOX_INDEX = 3;
 		final int TIME_TEXTBOX_INDEX = 1;
-		final int nbrViewsInRow = 4;
+		final int NBR_VIEWS_IN_ROW = 4;
 		
 		LinearLayout row = null;
 		String time = null;
@@ -94,11 +95,11 @@ public class DailyScheduleListActivity extends ListActivity {
 			row = (LinearLayout)lv.getChildAt(i);		
 			if (row != null) {
 				childCount = row.getChildCount();
-				if(childCount == nbrViewsInRow) {
+				if(childCount == NBR_VIEWS_IN_ROW) {
 					cb = (CheckBox)row.getChildAt(CHECKBOX_INDEX);
 					if (cb.isChecked()) {
 						time = ((TextView)row.getChildAt(TIME_TEXTBOX_INDEX)).getText().toString();
-						Service.RingSchedule.delRingSchedule(WEEK_DAY, time);
+						ringSchedule.delRingSchedule(WEEK_DAY, time);
 						row.setVisibility(ListView.GONE);
 					}				
 				}
@@ -107,7 +108,7 @@ public class DailyScheduleListActivity extends ListActivity {
 		lv.invalidate();
 		//Save the changes to disk for persistence.
 		try {
-			Service.RingSchedule.saveSchedule(this);
+			ringSchedule.saveSchedule(this);
 		}
 		catch(IOException e) {
 			Log.e(TAG, Log.getStackTraceString(e));

@@ -32,17 +32,23 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * This class reads from the mSchedule (set by the user) and changes the ring mode 
- * based on the users preferences at a given time of day.
-*/
+ * This class reads from the a Schedule (set by the user) and changes the ring mode 
+ * based on the users preferences at a given time of day. This class needs to run 
+ * constantly in the background. It is started on device boot or when the UI is started.
+ **/
 public class Service extends android.app.Service {
 	
 	
 	
 	private AudioManager mAudioManager;
-	public static Schedule RingSchedule;
-	public static boolean Enabled;
+	private static Schedule mRingSchedule;	
 	private final String TAG = "Scharing_Service";
+	
+	
+	
+	public static Schedule getRingSchedule() {
+		return mRingSchedule;
+	}
 	
 	
 	
@@ -55,16 +61,19 @@ public class Service extends android.app.Service {
 			//schedule is the only file we create so if its not there 
 			//then create one and shelve it.
 			if(fileList().length > 0) { 						
-				RingSchedule = Schedule.loadSchedule(this);		
+				mRingSchedule = Schedule.loadSchedule(this);		
 			}
 			else {
 				//First run create and persists schedule
-				RingSchedule = new Schedule();
-				RingSchedule.saveSchedule(this);
+				mRingSchedule = new Schedule();
+				mRingSchedule.saveSchedule(this);
 			}
 			
 		} 
-		catch (Exception e) {
+		catch (IOException e) {
+			Log.e(TAG, Log.getStackTraceString(e));
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
 			Log.e(TAG, Log.getStackTraceString(e));
 		}
 		
@@ -81,9 +90,13 @@ public class Service extends android.app.Service {
 	
 	
 	
+	/**
+	 * Save the schedule and let the user know that their next 
+	 * ringer mode change will not occur.
+	 */
     public void save() {
     	  try {
-  	       	RingSchedule.saveSchedule(this);
+  	       	mRingSchedule.saveSchedule(this);
   	       	Utilities.scharingNotification(getApplicationContext(), 
   	       	getString(R.string.service_shutdown_warning));
   	    } catch (IOException e) {
@@ -95,8 +108,9 @@ public class Service extends android.app.Service {
 	
     
     public void stopService() {
+      //Save our schedule if the services is killed
       save();
-      RingSchedule = null;
+      mRingSchedule = null;
       
 	}
 	
@@ -109,30 +123,28 @@ public class Service extends android.app.Service {
 	}
 	
 	
-	
-	//Respond to system time advancements, occurs every one minute.
+	/**
+	*Respond to system time advancements, occurs every one minute.
+	*If there is a matching day/time in the schedule then change the ringer 
+	*mode to the mode in the schedule.
+	**/
 	public class TimeTickListener extends BroadcastReceiver {	
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			try {
-				long millis = System.currentTimeMillis();
-				String strTime = Utilities.toScheduleTimeFormat(
-							   millis);
-				Time t = new Time();
-				t.set(millis);
-				int weekday = t.weekDay;
-				if(RingSchedule.hasTime(weekday, strTime)) {					
-					mAudioManager.setRingerMode(RingSchedule.getRingerMode(
-									      weekday, strTime));
-					Utilities.scharingNotification(getApplicationContext(), 
-						       getString(R.string.ring_mode_changed) + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
-				}
-				t = null;
+			long millis = System.currentTimeMillis();
+			String strTime = Utilities.toScheduleTimeFormat(
+						   millis);
+			Time t = new Time();
+			t.set(millis);
+			int weekday = t.weekDay;
+			if(mRingSchedule.hasTime(weekday, strTime)) {					
+				mAudioManager.setRingerMode(mRingSchedule.getRingerMode(
+								      weekday, strTime));
+				Utilities.scharingNotification(getApplicationContext(), 
+					       getString(R.string.ring_mode_changed) + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
 			}
-			catch(Exception e) {
-				Log.e(TAG, Log.getStackTraceString((e)));
+			t = null;
 				
-			}			
 		}
 	}
 	
