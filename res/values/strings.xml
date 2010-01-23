@@ -21,4 +21,5 @@
     <string name="service_starting">Scharing service starting</string>    
     <string name="weekday_prompt">-Select Day-</string>
     <string name="menu_delete">Delete Selected Schedule Item(s)</string>
+    <string name="btnBatchDelete_text">Delete Time From Selected Days</string>
 </resources>

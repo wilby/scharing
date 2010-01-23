@@ -12,30 +12,30 @@
   	<TableRow>
   		<Button
   			android:text="Sunday" 
-  			android:id="@+id/imgBtnSunday"
+  			android:id="@+id/btnSunday"
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content"
   			android:onClick="btn_Click"
 		/>
   		<Button
   			android:text="Monday" 
-  			android:id="@+id/imgBtnMonday"
+  			android:id="@+id/btnMonday"
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content"
-  			android:onClick="btn_Click"
+  			android:onClick="btnBatchDelete_Click"
 		/>	
   	</TableRow>
   	<TableRow>
   		<Button
   			android:text="Tuesday" 
-  			android:id="@+id/imgBtnTuesday"
+  			android:id="@+id/btnTuesday"
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content"
   			android:onClick="btn_Click"
 		/>
   		<Button
   			android:text="Wednesday" 
-  			android:id="@+id/imgBtnWednesday"
+  			android:id="@+id/btnWednesday"
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content"
   			android:onClick="btn_Click"
@@ -44,14 +44,14 @@
   	<TableRow>
   		<Button
   			android:text="Thursday" 
-  			android:id="@+id/imgBtnThursday"
+  			android:id="@+id/btnThursday"
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content"
   			android:onClick="btn_Click"
 		/>
   		<Button
   			android:text="Friday" 
-  			android:id="@+id/imgBtnFriday"
+  			android:id="@+id/btnFriday"
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content"
   			android:onClick="btn_Click"
@@ -60,12 +60,19 @@
   	<TableRow>
   		<Button
   			android:text="Saturday" 
-  			android:id="@+id/imgBtnSaturday"
+  			android:id="@+id/btnSaturday"
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content"
   			android:onClick="btn_Click"
 		/>
   			
+		<Button
+  			android:text="Batch Delete" 
+  			android:id="@+id/btnBatchDelete"
+  			android:layout_width="wrap_content"
+  			android:layout_height="wrap_content"
+  			android:onClick="btnBatchDelete_Click"
+		/>
   	</TableRow>
 </TableLayout>
 </LinearLayout>

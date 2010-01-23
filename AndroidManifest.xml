@@ -24,6 +24,9 @@
         </activity>
         <activity android:name="net.wcjj.scharing.DailyScheduleListActivity">
         </activity>
+        <activity android:name="net.wcjj.scharing.BatchDeleteUI" android:theme="@android:style/Theme.Dialog">
+        	
+        </activity>
      		  
 		<service 
 			android:name="net.wcjj.scharing.Service"  

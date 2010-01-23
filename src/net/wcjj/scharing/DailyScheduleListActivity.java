@@ -53,7 +53,7 @@ public class DailyScheduleListActivity extends ListActivity {
        mSa = new SimpleAdapter( 
 				this,
 				Service.getRingSchedule().toSimpleAdapterMap(DailyScheduleListActivity.WEEK_DAY),
-				R.layout.main_item_two_line_row,
+				R.layout.daily_schedule_list_row,
 				new String[] {Schedule.SCHEDULE_DOW ,Schedule.SCHEDULED_TIME, Schedule.RINGER_MODE},
 				new int[] { R.id.txtId, R.id.txtTime, R.id.txtRingMode }  );
        
@@ -105,8 +105,9 @@ public class DailyScheduleListActivity extends ListActivity {
 				}
 			}
 		}		
-		lv.invalidate();
-		//Save the changes to disk for persistence.
+		
+
+		//Save the changes to disk
 		try {
 			ringSchedule.saveSchedule(this);
 		}

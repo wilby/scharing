@@ -64,4 +64,12 @@ public class WeekUI extends Activity {
     
     
     
+    public void btnBatchDelete_Click(View v) {
+    	Intent i = new Intent(this, BatchDeleteUI.class);
+    	startActivity(i); 
+    }
+    
+    
+    
+    
 }

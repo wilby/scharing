@@ -47,7 +47,7 @@ public class SchedulerUI extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {    	    	
         super.onCreate(savedInstanceState);        
-        setContentView(R.layout.main);
+        setContentView(R.layout.scheduler_ui);
         
         Intent servIntent = new Intent(this, net.wcjj.scharing.Service.class);
     	startService(servIntent);   
@@ -89,6 +89,7 @@ public class SchedulerUI extends Activity {
 	}
     
     
+    
     private void addSchedules(int ringerMode, int weekday, String startTime, TextView tvMessages) {
     	if(Service.getRingSchedule().hasTime(weekday, startTime)) {
     		updateSchedules(ringerMode, weekday, startTime, tvMessages);
@@ -99,6 +100,8 @@ public class SchedulerUI extends Activity {
 	    	tvMessages.append(getString(R.string.ring_added) + messageSeperator);
     	}
     }
+    
+    
     
     private void updateSchedules (int ringerMode, int weekday, String startTime, TextView tvMessages) {
     	String messageSeperator = getString(R.string.message_seperator);
