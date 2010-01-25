@@ -124,10 +124,7 @@ public class SchedulerUI extends Activity {
     	Spinner spRingerMode = (Spinner)findViewById(R.id.spRingerMode);
     	
     	weekday = spWeekday.getSelectedItemPosition();
-    	startTime = String.valueOf(tpStartTime.getCurrentHour()) 
-    				+ ":" 
-					+ (String.valueOf(tpStartTime.getCurrentMinute()).length() == 1 ? "0" 
-							+ tpStartTime.getCurrentMinute().toString() : tpStartTime.getCurrentMinute().toString());
+    	startTime = Utilities.toScheduleTimeFormat(tpStartTime);
 
     	ringerMode = spRingerMode.getSelectedItemPosition();
     	

@@ -27,6 +27,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.text.format.Time;
+import android.widget.TimePicker;
 
 public class Utilities {
 	
@@ -70,6 +71,17 @@ public class Utilities {
 		String minutes = String.valueOf(t.minute);
 		//return time string in format [H]H:mm, military time 0-23
 		return String.valueOf(t.hour) + ":" + (minutes.length() == 1 ? "0" + minutes : minutes);	
+	}
+	
+	
+	
+	public static String toScheduleTimeFormat(TimePicker tp) {
+		String t = String.valueOf(tp.getCurrentHour()) 
+		+ ":" 
+		+ (String.valueOf(tp.getCurrentMinute()).length() == 1 ? "0" 
+				+ tp.getCurrentMinute().toString() : tp.getCurrentMinute().toString());
+		
+		return t;
 	}
 	
 	

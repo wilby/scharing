@@ -11,6 +11,12 @@
 		<item value="7" >Weekdays</item>
 		<item value="8" >Weekends</item>
 	</string-array>
+	
+	<string-array name="batchWeekday">		
+		<item>Weekdays</item>
+		<item>Weekends</item>
+		<item>All Days</item>
+	</string-array>
 
 	<string-array name="mil_hours">
 		<item>0</item>

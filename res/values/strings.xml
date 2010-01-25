@@ -5,10 +5,9 @@
     <string name="bootstrap_message">Scharing service has been started</string>
 	<string name="btnAddRingerChangeSchedule_text">Add Schedule</string>
     <string name="btnAddRingerChangeSchedule_hint">Select day, hour, minute and ringer mode then click Add Schedule</string>
-    <string name="btnViewSchedules_text">View Schedules</string>
+    <string name="btnViewSchedules_text">View/Delete Schedules</string>
     <string name="btnViewSchedules_hint">Click to open a list of days schedules</string>
-    <string name="day_lv_tag">DAY_LV</string>
-    <string name="greeting">Scharing scheduler interface!</string>    
+    <string name="day_lv_tag">DAY_LV</string>    
     <string name="hour_prompt">-Select Hour-</string>
     <string name="message_seperator">\n---------------------\n</string>
     <string name="minute_prompt">-Select Minute-</string>    
@@ -22,4 +21,7 @@
     <string name="weekday_prompt">-Select Day-</string>
     <string name="menu_delete">Delete Selected Schedule Item(s)</string>
     <string name="btnBatchDelete_text">Delete Time From Selected Days</string>
+    <string name="batch_dialog_title">Batch Delete:</string>
+    <string name="io_error">Saving scheduled failed.</string>
+    <string name="delete_success">Time deleted successfully from selected days</string>
 </resources>
