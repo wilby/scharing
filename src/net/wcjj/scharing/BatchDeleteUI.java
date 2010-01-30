@@ -3,6 +3,7 @@ package net.wcjj.scharing;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ public class BatchDeleteUI extends Activity {
 	
 	
 	final String TAG = "Scharing_BatchDeleteUI";
+	private boolean mHighlightColor = false;
 	
 	
 	@Override
@@ -81,6 +83,15 @@ public class BatchDeleteUI extends Activity {
     	try {
 			ringSchedule.saveSchedule(getApplicationContext());
 			tvMessages.setText(getString(R.string.delete_success));
+			if(mHighlightColor) {
+				tvMessages.setTextColor(Color.LTGRAY);
+				mHighlightColor = false;
+			}
+			else {
+				tvMessages.setTextColor(Color.parseColor(getString(R.color.font_color_for_dark_back)));
+				mHighlightColor = true;
+			
+			}
 		} catch (IOException e) {			
 			Log.e(TAG, Log.getStackTraceString(e));
 			Utilities.scharingNotification(getApplicationContext(), getString(R.string.io_error));

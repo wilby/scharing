@@ -120,8 +120,7 @@ public class DailyScheduleListActivity extends ListActivity {
 	
 	
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		//TODO: Implement a mass delete option ex. Mon-Fri for a selected time
+	public boolean onOptionsItemSelected(MenuItem item) {		
 		switch (item.getItemId()) {
 			case R.id.mBtnDelete:
 				mBtnDelete_Click();

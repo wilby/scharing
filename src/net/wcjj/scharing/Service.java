@@ -22,14 +22,20 @@
 package net.wcjj.scharing;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.IBinder;
 import android.text.format.Time;
 import android.util.Log;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * This class reads from the a Schedule (set by the user) and changes the ring mode 
@@ -147,6 +153,61 @@ public class Service extends android.app.Service {
 				
 		}
 	}
+	
+	
+	
+	public ArrayList<CalendarEvent> getTodaysCalEvents() {
+	    ContentResolver contentResolver = this.getContentResolver();
+	    final Cursor cursor = contentResolver.query(Uri.parse("content://calendar/calendars"),
+	    		(new String[] {"_id", "displayName"}), null, null, null);
+	    
+	    ArrayList<String> ids = new ArrayList<String>();
+	    
+	    while (cursor.moveToNext()) {
+	    	ids.add(cursor.getString(0));   	
+	    	
+	    } 
+	    
+	    Uri.Builder builder = Uri.parse("content://calendar/instances/when").buildUpon();
+	    
+	    long now = System.currentTimeMillis();
+	    
+	    ContentUris.appendId(builder, now);
+	    ContentUris.appendId(builder, now);
+	    
+	    Cursor eventCursor;
+	    
+	    String description = "";
+	    Date begin = null;
+	    Date end = null;
+	    Boolean allDay = false;
+	    ArrayList<CalendarEvent> calEvents = new ArrayList<CalendarEvent>();
+	    
+	    for (int i = 0; i < ids.size(); i++) {
+	    	
+		     eventCursor = getContentResolver().query(builder.build(),
+		    		new String[] { "description", "begin", "end", "allDay"}, "Calendars._id=" + ids.get(i),
+		    		null, "begin ASC");
+		    if (eventCursor.getCount() != 0) {
+			    while (eventCursor.moveToNext()) {
+			    	calEvents.add(new CalendarEvent(				    	
+				    	begin = new Date(eventCursor.getLong(1)),
+				    	end = new Date(eventCursor.getLong(2)),
+				    	allDay = !eventCursor.getString(3).equals("0"),
+				    	description = eventCursor.getString(0)
+			    	));
+			    	if(!allDay) {
+			    		
+			    	}
+			    	
+			    }
+			    eventCursor = null;				   
+		    }    	
+	    }
+	
+	    return calEvents;
+	     
+    }
 	
 	
 
