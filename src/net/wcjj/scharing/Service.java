@@ -48,6 +48,7 @@ public class Service extends android.app.Service {
 	
 	private AudioManager mAudioManager;
 	private static Schedule mRingSchedule;	
+	private ArrayList<CalendarEvent> mActiveCalEvents;
 	private final String TAG = "Scharing_Service";
 	
 	
@@ -62,6 +63,7 @@ public class Service extends android.app.Service {
 	public void onCreate() {				
 		registerReceiver(new TimeTickListener(),new IntentFilter(Intent.ACTION_TIME_TICK));
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
+		mActiveCalEvents = new ArrayList<CalendarEvent>();
 		
 		try {
 			//schedule is the only file we create so if its not there 
@@ -138,25 +140,79 @@ public class Service extends android.app.Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			long millis = System.currentTimeMillis();
-			String strTime = Utilities.toScheduleTimeFormat(
-						   millis);
-			Time t = new Time();
-			t.set(millis);
-			int weekday = t.weekDay;
-			if(mRingSchedule.hasTime(weekday, strTime)) {					
-				mAudioManager.setRingerMode(mRingSchedule.getRingerMode(
-								      weekday, strTime));
-				Utilities.scharingNotification(getApplicationContext(), 
-					       getString(R.string.ring_mode_changed) + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+			
+			if(!setModeByCalEventBegin(millis)) {
+				if(!setModeByCalEventEnd(millis)) {
+					String strTime = Utilities.toScheduleTimeFormat(
+								   millis);
+					Time t = new Time();
+					t.set(millis);
+					int weekday = t.weekDay;
+					if(mRingSchedule.hasTime(weekday, strTime)) {					
+						mAudioManager.setRingerMode(mRingSchedule.getRingerMode(
+										      weekday, strTime));
+						Utilities.scharingNotification(getApplicationContext(), 
+							       getString(R.string.ring_mode_changed) 
+							       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+					}
+					t = null;
+				}
 			}
-			t = null;
-				
 		}
 	}
 	
 	
+	private boolean setModeByCalEventBegin(long millis) {
+		
+		ArrayList<CalendarEvent> evts = getTodaysCalEvents(millis);
+		int nbrEvts = evts.size();
+		//If there are no events we will return to set mode by schedule
+		if(nbrEvts == 0)
+			return false;
+		
+		for(int i = 0; i < nbrEvts; i++) {
+			CalendarEvent ce = evts.get(i);			
+			if(ce.changesRingMode()) {
+				if(ce.matchesBeginTime(millis)) {
+					mActiveCalEvents.add(ce);
+					mAudioManager.setRingerMode(ce.getBeginRingMode());
+					Utilities.scharingNotification(getApplicationContext(), 
+						       getString(R.string.ring_mode_changed) 
+						       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+					return true;
+				}			
+			}			
+		}	
+		return false;
+		
+	}
 	
-	public ArrayList<CalendarEvent> getTodaysCalEvents() {
+	
+	private boolean setModeByCalEventEnd(long millis) {
+		ArrayList<CalendarEvent> evts = mActiveCalEvents;
+		int nbrEvts = evts.size();
+		//If there are no events we will return to set mode by schedule
+		if(nbrEvts == 0)
+			return false;
+		
+		for(int i = 0; i < nbrEvts; i++) {
+			CalendarEvent ce = evts.get(i);			
+			if(ce.changesRingMode()) {
+				if(ce.matchesEndTime(millis)) {
+					evts.remove(i);
+					mAudioManager.setRingerMode(ce.getEndRingMode());
+					Utilities.scharingNotification(getApplicationContext(), 
+						       getString(R.string.ring_mode_changed) 
+						       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+				}
+			}
+			ce = null;
+		}		
+		return true;
+	}
+	
+	
+	private ArrayList<CalendarEvent> getTodaysCalEvents(long millis) {
 	    ContentResolver contentResolver = this.getContentResolver();
 	    final Cursor cursor = contentResolver.query(Uri.parse("content://calendar/calendars"),
 	    		(new String[] {"_id", "displayName"}), null, null, null);
@@ -170,10 +226,9 @@ public class Service extends android.app.Service {
 	    
 	    Uri.Builder builder = Uri.parse("content://calendar/instances/when").buildUpon();
 	    
-	    long now = System.currentTimeMillis();
-	    
-	    ContentUris.appendId(builder, now);
-	    ContentUris.appendId(builder, now);
+	   
+	    ContentUris.appendId(builder, millis);
+	    ContentUris.appendId(builder, millis);
 	    
 	    Cursor eventCursor;
 	    
@@ -195,19 +250,31 @@ public class Service extends android.app.Service {
 				    	end = new Date(eventCursor.getLong(2)),
 				    	allDay = !eventCursor.getString(3).equals("0"),
 				    	description = eventCursor.getString(0)
-			    	));
-			    	if(!allDay) {
-			    		
-			    	}
-			    	
+			    	));			    	
 			    }
 			    eventCursor = null;				   
 		    }    	
 	    }
 	
-	    return calEvents;
-	     
+	    return calEvents;	     
     }
+	
+	
+	private void cleanCalEvents() {
+		ArrayList<CalendarEvent> evts = mActiveCalEvents;
+		Date dt = new Date(System.currentTimeMillis());
+		int day = dt.getDate();
+		for(int i = 0; i < evts.size(); i++) {
+			CalendarEvent ce = evts.get(i);
+			
+			if (day > ce.getBeginTime().getDate() 
+					&& day > ce.getEndTime().getDate()
+			) {
+				evts.remove(i);
+			}
+		}
+		
+	}
 	
 	
 
