@@ -149,6 +149,20 @@ public class CalendarEvent {
 	
 	
 	
+	public boolean endTimeHasPassed(long millis) {
+		Date target = new Date(millis);
+		if((target.getMonth() > mEndTime.getMonth() ||
+				target.getDate() > mEndTime.getDate() ||
+				target.getYear() > mEndTime.getYear() ||
+				target.getHours() > mEndTime.getHours()) || 
+				(target.getMinutes() > mEndTime.getMinutes())) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
 	public boolean changesRingMode() {			
 			if(mNbrMatchesFound == 0) {
 				mMatchFound = mMatcher.find();

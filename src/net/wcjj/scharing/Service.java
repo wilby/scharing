@@ -139,22 +139,23 @@ public class Service extends android.app.Service {
 	public class TimeTickListener extends BroadcastReceiver {	
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			long millis = System.currentTimeMillis();
+			long millis = System.currentTimeMillis();			
 			
-			if(!setModeByCalEventBegin(millis) && !setModeByCalEventEnd(millis)) {				
-				String strTime = Utilities.toScheduleTimeFormat(
-							   millis);
-				Time t = new Time();
-				t.set(millis);
-				int weekday = t.weekDay;
-				if(mRingSchedule.hasTime(weekday, strTime)) {					
-					mAudioManager.setRingerMode(mRingSchedule.getRingerMode(
-									      weekday, strTime));
-					Utilities.scharingNotification(getApplicationContext(), 
-						       getString(R.string.ring_mode_changed) 
-						       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+			if(!setModeByCalEventEnd(millis)) {
+				if(!setModeByCalEventBegin(millis)) {								
+					String strTime = Utilities.toScheduleTimeFormat(
+								   millis);
+					Time t = new Time();
+					t.set(millis);
+					int weekday = t.weekDay;
+					if(mRingSchedule.hasTime(weekday, strTime)) {					
+						mAudioManager.setRingerMode(mRingSchedule.getRingerMode(
+										      weekday, strTime));
+						Utilities.scharingNotification(getApplicationContext(), 
+							       getString(R.string.ring_mode_changed) 
+							       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+					}												
 				}
-				t = null;				
 			}
 		}
 	}
@@ -185,28 +186,41 @@ public class Service extends android.app.Service {
 		
 	}
 	
-	
+	/**
+	 * Cycle through the currently active events a determine if one of their end times 
+	 * matches the millis parameter.
+	 * @param millis	The date in milliseconds to be compared to the ending event time.
+	 * @return boolean If a calendar event end time matches the input date or not
+	 */
 	private boolean setModeByCalEventEnd(long millis) {
 		ArrayList<CalendarEvent> evts = mActiveCalEvents;
 		int nbrEvts = evts.size();
 		//If there are no events we will return to set mode by schedule
 		if(nbrEvts == 0 || evts == null)
 			return false;
-		
+				
 		for(int i = 0; i < nbrEvts; i++) {
 			CalendarEvent ce = evts.get(i);			
 			if(ce.changesRingMode()) {
-				if(ce.matchesEndTime(millis)) {
-					evts.remove(i);
+				if(ce.matchesEndTime(millis)) {					
 					mAudioManager.setRingerMode(ce.getEndRingMode());
 					Utilities.scharingNotification(getApplicationContext(), 
 						       getString(R.string.ring_mode_changed) 
 						       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+					evts.remove(i);
+					return true;
+				}
+				/* If more than one calendar has an event at the same time it would 
+				 * be possible for one event to be bypassed by the match and never be 
+				 * removed from the collection. This should get rid of any stragglers. 
+				 */
+				else if(ce.endTimeHasPassed(millis)) {					
+					evts.remove(i);
 				}
 			}
 			ce = null;
 		}		
-		return true;
+		return false;
 	}
 	
 	
