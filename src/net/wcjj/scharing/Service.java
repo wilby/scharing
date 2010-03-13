@@ -40,7 +40,7 @@ import java.util.Date;
 /**
  * This class reads from the a Schedule (set by the user) and changes the ring mode 
  * based on the users preferences at a given time of day. This class needs to run 
- * constantly in the background. It is started on device boot or when the UI is started.
+ * constantly in the background. It is started on device boot or when the UI is started. 
  **/
 public class Service extends android.app.Service {
 	
@@ -141,22 +141,20 @@ public class Service extends android.app.Service {
 		public void onReceive(Context context, Intent intent) {
 			long millis = System.currentTimeMillis();
 			
-			if(!setModeByCalEventBegin(millis)) {
-				if(!setModeByCalEventEnd(millis)) {
-					String strTime = Utilities.toScheduleTimeFormat(
-								   millis);
-					Time t = new Time();
-					t.set(millis);
-					int weekday = t.weekDay;
-					if(mRingSchedule.hasTime(weekday, strTime)) {					
-						mAudioManager.setRingerMode(mRingSchedule.getRingerMode(
-										      weekday, strTime));
-						Utilities.scharingNotification(getApplicationContext(), 
-							       getString(R.string.ring_mode_changed) 
-							       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
-					}
-					t = null;
+			if(!setModeByCalEventBegin(millis) && !setModeByCalEventEnd(millis)) {				
+				String strTime = Utilities.toScheduleTimeFormat(
+							   millis);
+				Time t = new Time();
+				t.set(millis);
+				int weekday = t.weekDay;
+				if(mRingSchedule.hasTime(weekday, strTime)) {					
+					mAudioManager.setRingerMode(mRingSchedule.getRingerMode(
+									      weekday, strTime));
+					Utilities.scharingNotification(getApplicationContext(), 
+						       getString(R.string.ring_mode_changed) 
+						       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
 				}
+				t = null;				
 			}
 		}
 	}
@@ -167,7 +165,7 @@ public class Service extends android.app.Service {
 		ArrayList<CalendarEvent> evts = getTodaysCalEvents(millis);
 		int nbrEvts = evts.size();
 		//If there are no events we will return to set mode by schedule
-		if(nbrEvts == 0)
+		if(nbrEvts == 0 || evts == null)
 			return false;
 		
 		for(int i = 0; i < nbrEvts; i++) {
@@ -192,7 +190,7 @@ public class Service extends android.app.Service {
 		ArrayList<CalendarEvent> evts = mActiveCalEvents;
 		int nbrEvts = evts.size();
 		//If there are no events we will return to set mode by schedule
-		if(nbrEvts == 0)
+		if(nbrEvts == 0 || evts == null)
 			return false;
 		
 		for(int i = 0; i < nbrEvts; i++) {
@@ -213,15 +211,15 @@ public class Service extends android.app.Service {
 	
 	
 	private ArrayList<CalendarEvent> getTodaysCalEvents(long millis) {
+		
 	    ContentResolver contentResolver = this.getContentResolver();
 	    final Cursor cursor = contentResolver.query(Uri.parse("content://calendar/calendars"),
-	    		(new String[] {"_id", "displayName"}), null, null, null);
+	    		(new String[] {"_id"}), null, null, null);
 	    
 	    ArrayList<String> ids = new ArrayList<String>();
 	    
 	    while (cursor.moveToNext()) {
-	    	ids.add(cursor.getString(0));   	
-	    	
+	    	ids.add(cursor.getString(0));   		    	
 	    } 
 	    
 	    Uri.Builder builder = Uri.parse("content://calendar/instances/when").buildUpon();
@@ -231,11 +229,7 @@ public class Service extends android.app.Service {
 	    ContentUris.appendId(builder, millis);
 	    
 	    Cursor eventCursor;
-	    
-	    String description = "";
-	    Date begin = null;
-	    Date end = null;
-	    Boolean allDay = false;
+	    	    
 	    ArrayList<CalendarEvent> calEvents = new ArrayList<CalendarEvent>();
 	    
 	    for (int i = 0; i < ids.size(); i++) {
@@ -246,10 +240,10 @@ public class Service extends android.app.Service {
 		    if (eventCursor.getCount() != 0) {
 			    while (eventCursor.moveToNext()) {
 			    	calEvents.add(new CalendarEvent(				    	
-				    	begin = new Date(eventCursor.getLong(1)),
-				    	end = new Date(eventCursor.getLong(2)),
-				    	allDay = !eventCursor.getString(3).equals("0"),
-				    	description = eventCursor.getString(0)
+				    	new Date(eventCursor.getLong(1)),
+				        new Date(eventCursor.getLong(2)),
+				    	!eventCursor.getString(3).equals("0"),
+				    	eventCursor.getString(0)
 			    	));			    	
 			    }
 			    eventCursor = null;				   

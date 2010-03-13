@@ -35,7 +35,7 @@ public final class R {
     }
     public static final class id {
         public static final int CheckBox02=0x7f090008;
-        public static final int btnAddRingerChangeSchedule=0x7f09000c;
+        public static final int btnAddRingerChangeSchedule=0x7f09000d;
         public static final int btnBatchDelete=0x7f090002;
         public static final int btnFriday=0x7f090016;
         public static final int btnMonday=0x7f090012;
@@ -43,17 +43,17 @@ public final class R {
         public static final int btnSunday=0x7f090011;
         public static final int btnThursday=0x7f090015;
         public static final int btnTuesday=0x7f090013;
-        public static final int btnViewSchedules=0x7f09000d;
+        public static final int btnViewSchedules=0x7f09000e;
         public static final int btnWednesday=0x7f090014;
         public static final int layMain=0x7f090009;
         public static final int lvrow=0x7f090004;
         public static final int mBtnDelete=0x7f090018;
         public static final int spBatchDeleteWeekday=0x7f090001;
-        public static final int spRingerMode=0x7f09000b;
+        public static final int spRingerMode=0x7f09000c;
         public static final int spWeekday=0x7f09000a;
         public static final int svMessages=0x7f09000f;
         public static final int tpBatchTime=0x7f090000;
-        public static final int tpTime=0x7f09000e;
+        public static final int tpTime=0x7f09000b;
         public static final int tvBatchDeleteMessages=0x7f090003;
         public static final int tvMessages=0x7f090010;
         public static final int txtId=0x7f090005;
@@ -64,9 +64,8 @@ public final class R {
         public static final int batch_delete=0x7f030000;
         public static final int daily_schedule_list_row=0x7f030001;
         public static final int lv_container=0x7f030002;
-        public static final int main=0x7f030003;
-        public static final int scheduler_ui=0x7f030004;
-        public static final int schedules_days=0x7f030005;
+        public static final int scheduler_ui=0x7f030003;
+        public static final int schedules_days=0x7f030004;
     }
     public static final class menu {
         public static final int daily_schedule_lv_menu=0x7f080000;
