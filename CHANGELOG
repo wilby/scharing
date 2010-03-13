@@ -1,0 +1,8 @@
+v2.0
+Unfortunate first release version due to being handled in the manifest.
+
+v2.1
+
+Added batch delete feature
+Added calendar events feature
+Starting test framework
