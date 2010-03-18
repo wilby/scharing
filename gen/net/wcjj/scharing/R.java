@@ -28,26 +28,32 @@ public final class R {
         public static final int window_background_alt=0x7f050006;
     }
     public static final class drawable {
-        public static final int delete=0x7f020000;
-        public static final int icon=0x7f020001;
-        public static final int notification_icon=0x7f020002;
-        public static final int window_border=0x7f020003;
+        public static final int checkedbox=0x7f020000;
+        public static final int delete=0x7f020001;
+        public static final int icon=0x7f020002;
+        public static final int notification_icon=0x7f020003;
+        public static final int uncheckedbox=0x7f020004;
+        public static final int window_border=0x7f020005;
     }
     public static final class id {
         public static final int CheckBox02=0x7f090008;
         public static final int btnAddRingerChangeSchedule=0x7f09000d;
         public static final int btnBatchDelete=0x7f090002;
+        public static final int btnDeleteEntireSchedule_Click=0x7f090018;
         public static final int btnFriday=0x7f090016;
         public static final int btnMonday=0x7f090012;
         public static final int btnSaturday=0x7f090017;
+        public static final int btnShedulerUIHelp=0x7f09001b;
         public static final int btnSunday=0x7f090011;
         public static final int btnThursday=0x7f090015;
         public static final int btnTuesday=0x7f090013;
         public static final int btnViewSchedules=0x7f09000e;
         public static final int btnWednesday=0x7f090014;
+        public static final int btnWeekViewDeleteHelp=0x7f09001c;
+        public static final int chbShowAlerts=0x7f09001a;
         public static final int layMain=0x7f090009;
         public static final int lvrow=0x7f090004;
-        public static final int mBtnDelete=0x7f090018;
+        public static final int mBtnDelete=0x7f090019;
         public static final int spBatchDeleteWeekday=0x7f090001;
         public static final int spRingerMode=0x7f09000c;
         public static final int spWeekday=0x7f09000a;
@@ -65,10 +71,12 @@ public final class R {
         public static final int daily_schedule_list_row=0x7f030001;
         public static final int lv_container=0x7f030002;
         public static final int scheduler_ui=0x7f030003;
-        public static final int schedules_days=0x7f030004;
+        public static final int week_view_delete=0x7f030004;
     }
     public static final class menu {
         public static final int daily_schedule_lv_menu=0x7f080000;
+        public static final int schedulerui_menu=0x7f080001;
+        public static final int week_view_delete_menu=0x7f080002;
     }
     public static final class string {
         public static final int add_time=0x7f060001;
@@ -81,10 +89,12 @@ public final class R {
         public static final int btnViewSchedules_hint=0x7f060006;
         public static final int btnViewSchedules_text=0x7f060005;
         public static final int day_lv_tag=0x7f060007;
+        public static final int delete_entire_schedule=0x7f060019;
         public static final int delete_success=0x7f060017;
         public static final int hour_prompt=0x7f060008;
         public static final int io_error=0x7f060016;
         public static final int menu_delete=0x7f060013;
+        public static final int menu_showalerts=0x7f060018;
         public static final int message_seperator=0x7f060009;
         public static final int minute_prompt=0x7f06000a;
         public static final int ring_added=0x7f06000b;
@@ -92,17 +102,26 @@ public final class R {
         public static final int ring_update=0x7f06000d;
         public static final int ringermode_prompt=0x7f06000e;
         public static final int schedule_days=0x7f06000f;
+        public static final int schedulerui_helpdialog_message=0x7f06001e;
+        public static final int schedulerui_helpdialog_title=0x7f06001d;
         public static final int service_shutdown_warning=0x7f060010;
         public static final int service_starting=0x7f060011;
+        public static final int week_view_delete_helpdialog_message=0x7f06001c;
+        public static final int week_view_delete_helpdialog_title=0x7f06001b;
+        public static final int week_view_delete_menu_title=0x7f06001a;
         public static final int weekday_prompt=0x7f060012;
     }
     public static final class style {
-        public static final int scharing_ScharingTheme=0x7f070006;
-        public static final int sharing_scrollViewStyle=0x7f070000;
-        public static final int sharing_spinnerDropDownItemStyle=0x7f070004;
-        public static final int sharing_spinnerItemStyle=0x7f070003;
-        public static final int sharing_spinnerStyle=0x7f070002;
-        public static final int sharing_textViewStyle=0x7f070001;
-        public static final int sharing_windowTitleStyle=0x7f070005;
+        /**  
+		<item name="android:textColor">@color/font_white</item>
+		<item name="android:windowBackground">@color/window_background</item>
+		<item name="android:textViewStyle">@style/sharing:textViewStyle</item>	
+		<item name="android:spinnerItemStyle">@style/sharing:spinnerItemStyle</item>
+		<item name="android:spinnerDropDownItemStyle">@style/sharing:spinnerDropDownItemStyle</item>
+		<item name="android:windowTitleStyle">@style/sharing:windowTitleStyle</item>		
+		 
+         */
+        public static final int scharing_ScharingTheme=0x7f070000;
+        public static final int sharing_scrollViewStyle=0x7f070001;
     }
 }

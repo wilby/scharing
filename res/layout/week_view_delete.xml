@@ -67,11 +67,20 @@
 		/>
   			
 		<Button
-  			android:text="Batch Delete" 
+  			android:text="Batch Time Delete" 
   			android:id="@+id/btnBatchDelete"
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content"
   			android:onClick="btnBatchDelete_Click"
+		/>
+  	</TableRow>
+  	<TableRow android:gravity="center_horizontal">
+  		<Button
+  			android:text="Delete Entire Schedule" 
+  			android:id="@+id/btnDeleteEntireSchedule_Click"
+  			android:layout_width="wrap_content"
+  			android:layout_height="wrap_content"
+  			android:onClick="btnDeleteEntireSchedule_Click"
 		/>
   	</TableRow>
 </TableLayout>

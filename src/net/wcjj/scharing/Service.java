@@ -33,12 +33,18 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.text.format.Time;
 import android.util.Log;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
+
 
 /**
- * This class reads from the a Schedule (set by the user) and changes the ring mode 
+ * This class reads from the Schedule (set by the user) and changes the ring mode 
  * based on the users preferences at a given time of day. This class needs to run 
  * constantly in the background. It is started on device boot or when the UI is started. 
  **/
@@ -46,16 +52,29 @@ public class Service extends android.app.Service {
 	
 	
 	
-	private AudioManager mAudioManager;
-	private static Schedule mRingSchedule;	
+	private AudioManager mAudioManager;		
 	private ArrayList<CalendarEvent> mActiveCalEvents;
-	private final String TAG = "Scharing_Service";
+	private final String TAG = "Scharing_Service";	
+	
+	private static boolean mShowAlerts;
+	private static Schedule mRingSchedule;
+	
+	public static final String APP_PROPERTIES_FILENAME = "app.properties";
 	
 	
 	
 	public static Schedule getRingSchedule() {
 		return mRingSchedule;
 	}
+		
+	public static boolean getShowAlerts() {
+		return mShowAlerts;
+	}
+	
+	public static void setShowAlerts(boolean value) {
+		mShowAlerts = value;				
+	}
+	
 	
 	
 	
@@ -63,12 +82,22 @@ public class Service extends android.app.Service {
 	public void onCreate() {				
 		registerReceiver(new TimeTickListener(),new IntentFilter(Intent.ACTION_TIME_TICK));
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-		mActiveCalEvents = new ArrayList<CalendarEvent>();
+		mActiveCalEvents = new ArrayList<CalendarEvent>();		
+		loadOrCreateUserProperties();
+		
 		
 		try {
-			//schedule is the only file we create so if its not there 
-			//then create one and shelve it.
-			if(fileList().length > 0) { 						
+			boolean fileNameMatches = false;
+			String schedulesFileName = "schedule.obj";
+			String[] fileNames = fileList();
+			if(fileNames.length > 0)
+				for (int i = 0; i < fileNames.length; i++) {
+					fileNameMatches = fileNames[i] == schedulesFileName;
+					if(fileNameMatches)
+						break;
+				}
+			
+			if(fileNameMatches) { 						
 				mRingSchedule = Schedule.loadSchedule(this);		
 			}
 			else {
@@ -81,7 +110,6 @@ public class Service extends android.app.Service {
 		catch (IOException e) {
 			Log.e(TAG, Log.getStackTraceString(e));
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG, Log.getStackTraceString(e));
 		}
 		
@@ -98,37 +126,74 @@ public class Service extends android.app.Service {
 	
 	
 	
-	/**
-	 * Save the schedule and let the user know that their next 
-	 * ringer mode change will not occur.
-	 */
-    public void save() {
-    	  try {
-  	       	mRingSchedule.saveSchedule(this);
-  	       	Utilities.scharingNotification(getApplicationContext(), 
-  	       	getString(R.string.service_shutdown_warning));
-  	    } catch (IOException e) {
-  	       	// TODO Auto-generated catch block			
-  	       	Log.e(TAG, e.getMessage());
-  	    }
-    }
-	
-	
-    
-    public void stopService() {
-      //Save our schedule if the services is killed
-      save();
-      mRingSchedule = null;
-      
+	@Override
+	public void onDestroy()  {		
+		mRingSchedule = null;
+		mAudioManager = null;
+		mActiveCalEvents = null;
+		super.onDestroy();
 	}
 	
-   
+	
+	public void stopService() {
+      //Save our schedule if the services is killed
+      save();
+      mRingSchedule = null;      
+	}
+		
+	
+	
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
+	/**
+	 * Save the schedule and let the user know that their next 
+	 * ringer mode change will not occur.
+	 */
+    private void save() {
+    	  try {
+  	       	mRingSchedule.saveSchedule(this);  	       	
+  	       	Utilities.scharingNotification(getApplicationContext(), 
+  	       	getString(R.string.service_shutdown_warning));
+  	    } catch (IOException e) {
+  	       	// TODO Auto-generated catch block			
+  	       	Log.e(TAG, e.getMessage());
+  	    }
+    }  
+	
+	private void loadOrCreateUserProperties() {
+		Properties props = new Properties();		
+		FileInputStream fis = null;
+		try {
+			fis  = this.openFileInput(APP_PROPERTIES_FILENAME);
+			props.load(fis);
+			mShowAlerts = Boolean.parseBoolean(props.getProperty("showalerts"));
+		} catch (FileNotFoundException e1) {
+			Log.d(TAG, "Properties file does not exists." , e1);			
+			FileOutputStream fos = null;
+			try {
+				props.setProperty("showalerts", "false");			
+				fos = this.openFileOutput(APP_PROPERTIES_FILENAME, Service.MODE_PRIVATE);
+				props.store(fos, "Initialization of new properties file.");
+				mShowAlerts = Boolean.parseBoolean(props.getProperty("showalerts"));
+				fos.close();				
+			} catch (IOException ex) {			
+				Log.d(TAG, "Could not create properties file", ex);				
+			}
+			
+		} catch (IOException e1) {			
+			Log.d(TAG, "IO Error while loading properties file." , e1);
+			mShowAlerts = true;
+		}
+		
+	}
+	
+	
 	
 	
 	/**
@@ -151,9 +216,7 @@ public class Service extends android.app.Service {
 					if(mRingSchedule.hasTime(weekday, strTime)) {					
 						mAudioManager.setRingerMode(mRingSchedule.getRingerMode(
 										      weekday, strTime));
-						Utilities.scharingNotification(getApplicationContext(), 
-							       getString(R.string.ring_mode_changed) 
-							       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+						showRingChangeAlert();
 					}												
 				}
 			}
@@ -162,8 +225,15 @@ public class Service extends android.app.Service {
 	
 	
 	private boolean setModeByCalEventBegin(long millis) {
+		ArrayList<CalendarEvent> evts;
+		//Make sure that a calendar is present on the system before continuing.
+		try {
+			 evts = getTodaysCalEvents(millis);
+		}
+		catch (NullContentProviderException ncpe) {
+			return false;
+		}
 		
-		ArrayList<CalendarEvent> evts = getTodaysCalEvents(millis);
 		int nbrEvts = evts.size();
 		//If there are no events we will return to set mode by schedule
 		if(nbrEvts == 0 || evts == null)
@@ -175,9 +245,7 @@ public class Service extends android.app.Service {
 				if(ce.matchesBeginTime(millis)) {
 					mActiveCalEvents.add(ce);
 					mAudioManager.setRingerMode(ce.getBeginRingMode());
-					Utilities.scharingNotification(getApplicationContext(), 
-						       getString(R.string.ring_mode_changed) 
-						       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+					showRingChangeAlert();
 					return true;
 				}			
 			}			
@@ -204,9 +272,7 @@ public class Service extends android.app.Service {
 			if(ce.changesRingMode()) {
 				if(ce.matchesEndTime(millis)) {					
 					mAudioManager.setRingerMode(ce.getEndRingMode());
-					Utilities.scharingNotification(getApplicationContext(), 
-						       getString(R.string.ring_mode_changed) 
-						       + " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+					showRingChangeAlert();
 					evts.remove(i);
 					return true;
 				}
@@ -224,11 +290,14 @@ public class Service extends android.app.Service {
 	}
 	
 	
-	private ArrayList<CalendarEvent> getTodaysCalEvents(long millis) {
+	private ArrayList<CalendarEvent> getTodaysCalEvents(long millis) throws NullContentProviderException {
 		
 	    ContentResolver contentResolver = this.getContentResolver();
 	    final Cursor cursor = contentResolver.query(Uri.parse("content://calendar/calendars"),
 	    		(new String[] {"_id"}), null, null, null);
+	    
+	    if (cursor == null)
+	    	throw new NullContentProviderException("This version of android does not have the calendar app present.");
 	    
 	    ArrayList<String> ids = new ArrayList<String>();
 	    
@@ -268,24 +337,13 @@ public class Service extends android.app.Service {
     }
 	
 	
-	private void cleanCalEvents() {
-		ArrayList<CalendarEvent> evts = mActiveCalEvents;
-		Date dt = new Date(System.currentTimeMillis());
-		int day = dt.getDate();
-		for(int i = 0; i < evts.size(); i++) {
-			CalendarEvent ce = evts.get(i);
-			
-			if (day > ce.getBeginTime().getDate() 
-					&& day > ce.getEndTime().getDate()
-			) {
-				evts.remove(i);
-			}
-		}
-		
+	private void showRingChangeAlert() {
+		if(mShowAlerts)
+			Utilities.scharingNotification(getApplicationContext(), 
+					getString(R.string.ring_mode_changed) 
+					+ " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
+	
 	}
-	
-	
-
 }
 
 

@@ -22,7 +22,6 @@
 package net.wcjj.scharing;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 

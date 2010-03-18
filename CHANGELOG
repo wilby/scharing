@@ -5,4 +5,8 @@ v2.1
 
 Added batch delete feature
 Added calendar events feature
+Added option to show alerts
+fixed bug where manual entry in time picker will now update properly.
+Day of week spinner now defaults to today's weekday
+
 Starting test framework

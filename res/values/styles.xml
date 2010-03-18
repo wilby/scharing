@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+
+	<style name="scharing:ScharingTheme" parent="android:Theme" >
+		<item name="android:scrollViewStyle">@style/sharing:scrollViewStyle</item>
+			
+		<!-- 
+		<item name="android:textColor">@color/font_white</item>
+		<item name="android:windowBackground">@color/window_background</item>
+		<item name="android:textViewStyle">@style/sharing:textViewStyle</item>	
+		<item name="android:spinnerItemStyle">@style/sharing:spinnerItemStyle</item>
+		<item name="android:spinnerDropDownItemStyle">@style/sharing:spinnerDropDownItemStyle</item>
+		<item name="android:windowTitleStyle">@style/sharing:windowTitleStyle</item>		
+		 -->
+	</style>
 	
 	<style name="sharing:scrollViewStyle" >
 		<item name="android:background">@drawable/window_border</item>		
 	</style>
 	
-	<style name="sharing:textViewStyle" parent="@android:style/Widget.TextView" >		
-		<item name="android:textColor">@color/widget_background</item>	
-		
-	</style>
+
+	<!-- 
 	
+	
+	<style name="sharing:textViewStyle" parent="@android:style/Widget.TextView" >		
+		<item name="android:textColor">@color/widget_background</item>		
+	</style>
 
 	<style name="sharing:spinnerStyle" parent="@android:style/Widget.Spinner" >
 		
@@ -33,14 +48,5 @@
 	</style>
 	
 	
-	<style name="scharing:ScharingTheme" parent="android:Theme.Light" >
-		<item name="android:textColor">@color/font_white</item>
-		<item name="android:windowBackground">@color/window_background</item>
-		<item name="android:scrollViewStyle">@style/sharing:scrollViewStyle</item>
-		<item name="android:textViewStyle">@style/sharing:textViewStyle</item>		
-		<item name="android:spinnerItemStyle">@style/sharing:spinnerItemStyle</item>
-		<item name="android:spinnerDropDownItemStyle">@style/sharing:spinnerDropDownItemStyle</item>
-		<item name="android:windowTitleStyle">@style/sharing:windowTitleStyle</item>		
-	</style>
-
+	 -->
 </resources>

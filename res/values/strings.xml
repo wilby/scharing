@@ -22,6 +22,57 @@
     <string name="menu_delete">Delete Selected Schedule Item(s)</string>
     <string name="btnBatchDelete_text">Delete Time From Selected Days</string>
     <string name="batch_dialog_title">Batch Delete:</string>
-    <string name="io_error">Saving scheduled failed.</string>
+    <string name="io_error">Saving schedule failed.</string>
     <string name="delete_success">Time deleted successfully from selected days</string>
+    <string name="menu_showalerts">Show Alerts</string>
+    <string name="delete_entire_schedule">Are you sure you want delete your entire weeks schedule?</string>    
+    <string name="week_view_delete_menu_title">Help</string>
+    <string name="week_view_delete_helpdialog_title">Deleting Scheduled Items</string>
+    <string name="week_view_delete_helpdialog_message">
+    	Delete Ringer Change Times:\n
+    	\n
+    	From A Single Day:\n
+    		Select the day of the week you want to delete the time from. 
+    		A list will show the scheduled ringer change times for that 
+    		day. Check all the times you want to delete, tap your menu 
+    		key then select delete from the menu.\n\n
+   		A Single Time From A Batch Of Days:\n
+   			Tap the \'Batch Time Delete\' button, a dialog will pop up. 
+   			Input the time you want to delete and select to delete 
+   			that time from all Weekdays, Weekend days, or All Days. Then 
+   			tap the \'Delete Time From Selected Days\' button.\n\n
+ 		Delete Your Entire Schedule:\n
+ 			Tap the \'Delete Entire Schedule\' button. A dialog will ask you 
+ 			to confirm your choice, tap Yes to continue or No to cancel. 
+ 			This will remove all times for all days that you have entered 
+ 			ringer mode changes to occur.   
+    </string>
+    <string name="schedulerui_helpdialog_title">Ringer Mode Changes</string>
+    <string name="schedulerui_helpdialog_message">
+    	Day-Of-Week:\n
+    		To schedule a ringer mode change, select a day of the week 
+    		then input the time you want the change to occur.
+    		Select the mode you want the phone to change to at that time.
+    		Tap the \'Add Schedule\' button and you should see a confirmation 
+    		message in the box at the bottom of the view.\n\n    		
+    		Note:\n
+    		If you try to add a time that is already scheduled for that day 
+    		and time, the schedule will be updated with the mode change you 
+    		just selected.\n\n    		     		
+    		Note:\n
+    		When you schedule a ring mode change for a day of the week 
+    		(Sun-Sat) your schedule will continue to change your ring mode 
+    		every week on that day until you delete the scheduled time.\n\n
+   		Batch Days:\n
+   			You can also schedule a time and ringer mode and add it to 
+   			multiple days at once. If you scroll to the bottom of the  
+   			days of the week spinner you will see a selection for 
+   			weekdays and weekends. Weekdays will add your time 
+   			to Mon-Fri and weekends will add it to Sat-Sun.\n\n
+  		View/Delete Schedules:\n
+  			You can view or delete you scheduled items but tapping the 
+  			\'View/Delete Schedules\' button which will open a new view 
+  			that will also have help instructions in the menu. 
+  		
+    </string>
 </resources>

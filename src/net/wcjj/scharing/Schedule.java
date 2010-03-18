@@ -60,6 +60,9 @@ public class Schedule implements java.io.Serializable {
 	public static final String SCHEDULE_DOW = "SCHEDULE_DOW";
 	
 	
+	public String getSchedulesFileNameOnDisk() {
+		return FILENAME;
+	}
 	
 	public ArrayList<HashMap<String, Integer>> getWeek() {
 		return mWeek;		
@@ -103,7 +106,11 @@ public class Schedule implements java.io.Serializable {
 		}
 	}
 	
-	
+	public void delEntireSchedule() {		
+		for(int i = 0; i < mWeek.size(); i++ ) {
+			mWeek.get(i).clear();
+		}
+	}
 	
 	public void updateRingSchedule(int dayOfWeek, String startTime, int newRingMode)
 	    throws IllegalArgumentException {
@@ -147,6 +154,7 @@ public class Schedule implements java.io.Serializable {
 			throw ex;
 		}
 		finally {
+			fis.close();
 			ois.close();
 		}
 	}
@@ -166,6 +174,7 @@ public class Schedule implements java.io.Serializable {
 				throw ex;
 			}		
 			finally {
+				fos.close();
 				oos.close();
 			}
 	    	
@@ -174,7 +183,7 @@ public class Schedule implements java.io.Serializable {
 	 
 	
 	/**
-	 * I could have extened a ListAdapter and created a way to 
+	 * I could have extended a ListAdapter and created a way to 
 	 * handle Schedule as it occurs in this class. I want to 
 	 * get this app to beta asap so I can start using it so 
 	 * I am cheating and utilizing a quick fix by converting 

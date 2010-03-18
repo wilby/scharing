@@ -30,8 +30,7 @@ import android.text.format.Time;
 import android.widget.TimePicker;
 
 public class Utilities {
-	
-	
+
 	
 	private static final int RINGER_MODE_CHANGE_NOTIFY_ID = 1;
 	private static final String RINGER_MODE_CHANGE_NOTIFY_TAG = "RINGER MODE CHANGED";
