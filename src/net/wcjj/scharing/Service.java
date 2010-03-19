@@ -205,9 +205,9 @@ public class Service extends android.app.Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			long millis = System.currentTimeMillis();			
-			
-			if(!setModeByCalEventEnd(millis)) {
-				if(!setModeByCalEventBegin(millis)) {								
+			//Calendar event functions are buggy yet.
+			//if(!setModeByCalEventEnd(millis)) {
+				//if(!setModeByCalEventBegin(millis)) {								
 					String strTime = Utilities.toScheduleTimeFormat(
 								   millis);
 					Time t = new Time();
@@ -218,8 +218,8 @@ public class Service extends android.app.Service {
 										      weekday, strTime));
 						showRingChangeAlert();
 					}												
-				}
-			}
+				//}
+			//}
 		}
 	}
 	
