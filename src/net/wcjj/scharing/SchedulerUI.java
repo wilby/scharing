@@ -28,7 +28,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
-import android.view.FocusFinder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,13 +37,10 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Button;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Properties;
 
 public class SchedulerUI extends Activity {

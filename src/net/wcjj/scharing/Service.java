@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 
+//LEAVE ALL IMPORTS, THEY WILL BE USED WITH CALENDAR FUNCTIONALITY
 
 /**
  * This class reads from the Schedule (set by the user) and changes the ring mode 
@@ -53,7 +54,7 @@ public class Service extends android.app.Service {
 	
 	
 	private AudioManager mAudioManager;		
-	private ArrayList<CalendarEvent> mActiveCalEvents;
+	//private ArrayList<CalendarEvent> mActiveCalEvents;
 	private final String TAG = "Scharing_Service";	
 	
 	private static boolean mShowAlerts;
@@ -82,7 +83,7 @@ public class Service extends android.app.Service {
 	public void onCreate() {				
 		registerReceiver(new TimeTickListener(),new IntentFilter(Intent.ACTION_TIME_TICK));
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-		mActiveCalEvents = new ArrayList<CalendarEvent>();		
+		//mActiveCalEvents = new ArrayList<CalendarEvent>();		
 		loadOrCreateUserProperties();
 		
 		
@@ -130,7 +131,7 @@ public class Service extends android.app.Service {
 	public void onDestroy()  {		
 		mRingSchedule = null;
 		mAudioManager = null;
-		mActiveCalEvents = null;
+		//mActiveCalEvents = null;
 		super.onDestroy();
 	}
 	
@@ -223,118 +224,121 @@ public class Service extends android.app.Service {
 		}
 	}
 	
-	
-	private boolean setModeByCalEventBegin(long millis) {
-		ArrayList<CalendarEvent> evts;
-		//Make sure that a calendar is present on the system before continuing.
-		try {
-			 evts = getTodaysCalEvents(millis);
-		}
-		catch (NullContentProviderException ncpe) {
-			return false;
-		}
-		
-		int nbrEvts = evts.size();
-		//If there are no events we will return to set mode by schedule
-		if(nbrEvts == 0 || evts == null)
-			return false;
-		
-		for(int i = 0; i < nbrEvts; i++) {
-			CalendarEvent ce = evts.get(i);			
-			if(ce.changesRingMode()) {
-				if(ce.matchesBeginTime(millis)) {
-					mActiveCalEvents.add(ce);
-					mAudioManager.setRingerMode(ce.getBeginRingMode());
-					showRingChangeAlert();
-					return true;
-				}			
-			}			
-		}	
-		return false;
-		
-	}
-	
-	/**
-	 * Cycle through the currently active events a determine if one of their end times 
-	 * matches the millis parameter.
-	 * @param millis	The date in milliseconds to be compared to the ending event time.
-	 * @return boolean If a calendar event end time matches the input date or not
-	 */
-	private boolean setModeByCalEventEnd(long millis) {
-		ArrayList<CalendarEvent> evts = mActiveCalEvents;
-		int nbrEvts = evts.size();
-		//If there are no events we will return to set mode by schedule
-		if(nbrEvts == 0 || evts == null)
-			return false;
-				
-		for(int i = 0; i < nbrEvts; i++) {
-			CalendarEvent ce = evts.get(i);			
-			if(ce.changesRingMode()) {
-				if(ce.matchesEndTime(millis)) {					
-					mAudioManager.setRingerMode(ce.getEndRingMode());
-					showRingChangeAlert();
-					evts.remove(i);
-					return true;
-				}
-				/* If more than one calendar has an event at the same time it would 
-				 * be possible for one event to be bypassed by the match and never be 
-				 * removed from the collection. This should get rid of any stragglers. 
-				 */
-				else if(ce.endTimeHasPassed(millis)) {					
-					evts.remove(i);
-				}
-			}
-			ce = null;
-		}		
-		return false;
-	}
-	
-	
-	private ArrayList<CalendarEvent> getTodaysCalEvents(long millis) throws NullContentProviderException {
-		
-	    ContentResolver contentResolver = this.getContentResolver();
-	    final Cursor cursor = contentResolver.query(Uri.parse("content://calendar/calendars"),
-	    		(new String[] {"_id"}), null, null, null);
-	    
-	    if (cursor == null)
-	    	throw new NullContentProviderException("This version of android does not have the calendar app present.");
-	    
-	    ArrayList<String> ids = new ArrayList<String>();
-	    
-	    while (cursor.moveToNext()) {
-	    	ids.add(cursor.getString(0));   		    	
-	    } 
-	    
-	    Uri.Builder builder = Uri.parse("content://calendar/instances/when").buildUpon();
-	    
-	   
-	    ContentUris.appendId(builder, millis);
-	    ContentUris.appendId(builder, millis);
-	    
-	    Cursor eventCursor;
-	    	    
-	    ArrayList<CalendarEvent> calEvents = new ArrayList<CalendarEvent>();
-	    
-	    for (int i = 0; i < ids.size(); i++) {
-	    	
-		     eventCursor = getContentResolver().query(builder.build(),
-		    		new String[] { "description", "begin", "end", "allDay"}, "Calendars._id=" + ids.get(i),
-		    		null, "begin ASC");
-		    if (eventCursor.getCount() != 0) {
-			    while (eventCursor.moveToNext()) {
-			    	calEvents.add(new CalendarEvent(				    	
-				    	new Date(eventCursor.getLong(1)),
-				        new Date(eventCursor.getLong(2)),
-				    	!eventCursor.getString(3).equals("0"),
-				    	eventCursor.getString(0)
-			    	));			    	
-			    }
-			    eventCursor = null;				   
-		    }    	
-	    }
-	
-	    return calEvents;	     
-    }
+	//Calendar Events Functionality, uneeded for coming release, to many bugs.
+//	private boolean setModeByCalEventBegin(long millis) {
+//		ArrayList<CalendarEvent> evts;
+//		//Make sure that a calendar is present on the system before continuing.
+//		try {
+//			 evts = getTodaysCalEvents(millis);
+//		}
+//		catch (NullContentProviderException ncpe) {
+//			return false;
+//		}
+//		
+//		int nbrEvts = evts.size();
+//		//If there are no events we will return to set mode by schedule
+//		if(nbrEvts == 0 || evts == null)
+//			return false;
+//		
+//		for(int i = 0; i < nbrEvts; i++) {
+//			CalendarEvent ce = evts.get(i);			
+//			if(ce.changesRingMode()) {
+//				if(ce.matchesBeginTime(millis)) {
+//					mActiveCalEvents.add(ce);
+//					mAudioManager.setRingerMode(ce.getBeginRingMode());
+//					showRingChangeAlert();
+//					return true;
+//				}			
+//			}			
+//		}	
+//		return false;
+//		
+//	}
+//	
+//	
+//	
+//	/**
+//	 * Cycle through the currently active events a determine if one of their end times 
+//	 * matches the millis parameter.
+//	 * @param millis	The date in milliseconds to be compared to the ending event time.
+//	 * @return boolean If a calendar event end time matches the input date or not
+//	 */
+//	
+//	private boolean setModeByCalEventEnd(long millis) {
+//		ArrayList<CalendarEvent> evts = mActiveCalEvents;
+//		int nbrEvts = evts.size();
+//		//If there are no events we will return to set mode by schedule
+//		if(nbrEvts == 0 || evts == null)
+//			return false;
+//				
+//		for(int i = 0; i < nbrEvts; i++) {
+//			CalendarEvent ce = evts.get(i);			
+//			if(ce.changesRingMode()) {
+//				if(ce.matchesEndTime(millis)) {					
+//					mAudioManager.setRingerMode(ce.getEndRingMode());
+//					showRingChangeAlert();
+//					evts.remove(i);
+//					return true;
+//				}
+//				/* If more than one calendar has an event at the same time it would 
+//				 * be possible for one event to be bypassed by the match and never be 
+//				 * removed from the collection. This should get rid of any stragglers. 
+//				 */
+//				else if(ce.endTimeHasPassed(millis)) {					
+//					evts.remove(i);
+//				}
+//			}
+//			ce = null;
+//		}		
+//		return false;
+//	}
+//	
+//	
+//	private ArrayList<CalendarEvent> getTodaysCalEvents(long millis) throws NullContentProviderException {
+//		
+//	    ContentResolver contentResolver = this.getContentResolver();
+//	    final Cursor cursor = contentResolver.query(Uri.parse("content://calendar/calendars"),
+//	    		(new String[] {"_id"}), null, null, null);
+//	    
+//	    if (cursor == null)
+//	    	throw new NullContentProviderException("This version of android does not have the calendar app present.");
+//	    
+//	    ArrayList<String> ids = new ArrayList<String>();
+//	    
+//	    while (cursor.moveToNext()) {
+//	    	ids.add(cursor.getString(0));   		    	
+//	    } 
+//	    
+//	    Uri.Builder builder = Uri.parse("content://calendar/instances/when").buildUpon();
+//	    
+//	   
+//	    ContentUris.appendId(builder, millis);
+//	    ContentUris.appendId(builder, millis);
+//	    
+//	    Cursor eventCursor;
+//	    	    
+//	    ArrayList<CalendarEvent> calEvents = new ArrayList<CalendarEvent>();
+//	    
+//	    for (int i = 0; i < ids.size(); i++) {
+//	    	
+//		     eventCursor = getContentResolver().query(builder.build(),
+//		    		new String[] { "description", "begin", "end", "allDay"}, "Calendars._id=" + ids.get(i),
+//		    		null, "begin ASC");
+//		    if (eventCursor.getCount() != 0) {
+//			    while (eventCursor.moveToNext()) {
+//			    	calEvents.add(new CalendarEvent(				    	
+//				    	new Date(eventCursor.getLong(1)),
+//				        new Date(eventCursor.getLong(2)),
+//				    	!eventCursor.getString(3).equals("0"),
+//				    	eventCursor.getString(0)
+//			    	));			    	
+//			    }
+//			    eventCursor = null;				   
+//		    }    	
+//	    }
+//	
+//	    return calEvents;	     
+//    }
 	
 	
 	private void showRingChangeAlert() {
