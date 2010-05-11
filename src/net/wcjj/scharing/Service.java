@@ -51,42 +51,27 @@ import java.util.Properties;
  **/
 public class Service extends android.app.Service {
 	
-	
-	
-	private AudioManager mAudioManager;		
-	//private ArrayList<CalendarEvent> mActiveCalEvents;
+	private AudioManager mAudioManager;	
 	private final String TAG = "Scharing_Service";	
-	
+	public static final String APP_PROPERTIES_FILENAME = "app.properties";	
 	private static boolean mShowAlerts;
 	private static Schedule mRingSchedule;
-	
-	public static final String APP_PROPERTIES_FILENAME = "app.properties";
-	
 	
 	
 	public static Schedule getRingSchedule() {
 		return mRingSchedule;
 	}
 		
-	public static boolean getShowAlerts() {
-		return mShowAlerts;
-	}
-	
-	public static void setShowAlerts(boolean value) {
-		mShowAlerts = value;				
-	}
-	
-	
-	
 	
 	@Override
 	public void onCreate() {				
-		registerReceiver(new TimeTickListener(),new IntentFilter(Intent.ACTION_TIME_TICK));
-		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-		//mActiveCalEvents = new ArrayList<CalendarEvent>();		
-		loadOrCreateUserProperties();
+		registerReceiver(new TimeTickListener(),new IntentFilter(Intent.ACTION_TIME_TICK));		
+		registerReceiver(new ScharingSetAlertsListener(), new IntentFilter(ScharingIntents.HIDE_SHARING_ALERTS));
+		registerReceiver(new ScharingSetAlertsListener(), new IntentFilter(ScharingIntents.SHOW_SHARING_ALERTS));
+		registerReceiver(new ScharingSetAlertsListener(), new IntentFilter(ScharingIntents.REQUEST_SHOW_ALERTS_STATE));
 		
-		
+		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);	
+			
 		try {
 			boolean fileNameMatches = false;
 			String schedulesFileName = "schedule.obj";
@@ -106,6 +91,7 @@ public class Service extends android.app.Service {
 				mRingSchedule = new Schedule();
 				mRingSchedule.saveSchedule(this);
 			}
+			loadOrCreateUserProperties();
 			
 		} 
 		catch (IOException e) {
@@ -130,8 +116,7 @@ public class Service extends android.app.Service {
 	@Override
 	public void onDestroy()  {		
 		mRingSchedule = null;
-		mAudioManager = null;
-		//mActiveCalEvents = null;
+		mAudioManager = null;		
 		super.onDestroy();
 	}
 	
@@ -158,40 +143,42 @@ public class Service extends android.app.Service {
 	 */
     private void save() {
     	  try {
+    		mRingSchedule.setShowAlerts(mShowAlerts);
   	       	mRingSchedule.saveSchedule(this);  	       	
   	       	Utilities.scharingNotification(getApplicationContext(), 
   	       	getString(R.string.service_shutdown_warning));
-  	    } catch (IOException e) {
-  	       	// TODO Auto-generated catch block			
+  	    } catch (IOException e) {  	       		
   	       	Log.e(TAG, e.getMessage());
   	    }
     }  
 	
 	private void loadOrCreateUserProperties() {
-		Properties props = new Properties();		
-		FileInputStream fis = null;
-		try {
-			fis  = this.openFileInput(APP_PROPERTIES_FILENAME);
-			props.load(fis);
-			mShowAlerts = Boolean.parseBoolean(props.getProperty("showalerts"));
-		} catch (FileNotFoundException e1) {
-			Log.d(TAG, "Properties file does not exists." , e1);			
-			FileOutputStream fos = null;
-			try {
-				props.setProperty("showalerts", "false");			
-				fos = this.openFileOutput(APP_PROPERTIES_FILENAME, Service.MODE_PRIVATE);
-				props.store(fos, "Initialization of new properties file.");
-				mShowAlerts = Boolean.parseBoolean(props.getProperty("showalerts"));
-				fos.close();				
-			} catch (IOException ex) {			
-				Log.d(TAG, "Could not create properties file", ex);				
-			}
-			
-		} catch (IOException e1) {			
-			Log.d(TAG, "IO Error while loading properties file." , e1);
-			mShowAlerts = true;
-		}
+		mShowAlerts = mRingSchedule.getShowAlerts();
 		
+		
+//		Properties props = new Properties();		
+//		FileInputStream fis = null;
+//		try {
+//			fis  = this.openFileInput(APP_PROPERTIES_FILENAME);
+//			props.load(fis);
+//			mShowAlerts = Boolean.parseBoolean(props.getProperty("showalerts"));
+//		} catch (FileNotFoundException e1) {
+//			Log.d(TAG, "Properties file does not exists." , e1);			
+//			FileOutputStream fos = null;
+//			try {
+//				props.setProperty("showalerts", "true");			
+//				fos = this.openFileOutput(APP_PROPERTIES_FILENAME, Service.MODE_PRIVATE);
+//				props.store(fos, "Initialization of new properties file.");
+//				mShowAlerts = Boolean.parseBoolean(props.getProperty("showalerts"));
+//				fos.close();				
+//			} catch (IOException ex) {			
+//				Log.d(TAG, "Could not create properties file", ex);				
+//			}
+//			
+//		} catch (IOException e1) {			
+//			Log.d(TAG, "IO Error while loading properties file." , e1);
+//			mShowAlerts = true;
+//		}		
 	}
 	
 	
@@ -200,146 +187,48 @@ public class Service extends android.app.Service {
 	/**
 	*Respond to system time advancements, occurs every one minute.
 	*If there is a matching day/time in the schedule then change the ringer 
-	*mode to the mode in the schedule.
+	*mode to the mode specified in the schedule.
 	**/
 	public class TimeTickListener extends BroadcastReceiver {	
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			long millis = System.currentTimeMillis();			
-			//Calendar event functions are buggy yet.
-			//if(!setModeByCalEventEnd(millis)) {
-				//if(!setModeByCalEventBegin(millis)) {								
-					String strTime = Utilities.toScheduleTimeFormat(
-								   millis);
-					Time t = new Time();
-					t.set(millis);
-					int weekday = t.weekDay;
-					if(mRingSchedule.hasTime(weekday, strTime)) {					
-						mAudioManager.setRingerMode(mRingSchedule.getRingerMode(
-										      weekday, strTime));
-						showRingChangeAlert();
-					}												
-				//}
-			//}
+								
+			String strTime = Utilities.toScheduleTimeFormat(
+						   millis);
+			Time t = new Time();
+			t.set(millis);
+			int weekday = t.weekDay;
+			if(mRingSchedule.hasTime(weekday, strTime)) {					
+				mAudioManager.setRingerMode(mRingSchedule.getRingerMode(
+								      weekday, strTime));
+				showRingChangeAlert();
+			}
 		}
 	}
+
+	public class ScharingSetAlertsListener extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			mShowAlerts = intent.getAction().equals(ScharingIntents.SHOW_SHARING_ALERTS) ? true :  false;			
+		}	
+	}
 	
-	//Calendar Events Functionality, uneeded for coming release, to many bugs.
-//	private boolean setModeByCalEventBegin(long millis) {
-//		ArrayList<CalendarEvent> evts;
-//		//Make sure that a calendar is present on the system before continuing.
-//		try {
-//			 evts = getTodaysCalEvents(millis);
-//		}
-//		catch (NullContentProviderException ncpe) {
-//			return false;
-//		}
-//		
-//		int nbrEvts = evts.size();
-//		//If there are no events we will return to set mode by schedule
-//		if(nbrEvts == 0 || evts == null)
-//			return false;
-//		
-//		for(int i = 0; i < nbrEvts; i++) {
-//			CalendarEvent ce = evts.get(i);			
-//			if(ce.changesRingMode()) {
-//				if(ce.matchesBeginTime(millis)) {
-//					mActiveCalEvents.add(ce);
-//					mAudioManager.setRingerMode(ce.getBeginRingMode());
-//					showRingChangeAlert();
-//					return true;
-//				}			
-//			}			
-//		}	
-//		return false;
-//		
-//	}
-//	
-//	
-//	
-//	/**
-//	 * Cycle through the currently active events a determine if one of their end times 
-//	 * matches the millis parameter.
-//	 * @param millis	The date in milliseconds to be compared to the ending event time.
-//	 * @return boolean If a calendar event end time matches the input date or not
-//	 */
-//	
-//	private boolean setModeByCalEventEnd(long millis) {
-//		ArrayList<CalendarEvent> evts = mActiveCalEvents;
-//		int nbrEvts = evts.size();
-//		//If there are no events we will return to set mode by schedule
-//		if(nbrEvts == 0 || evts == null)
-//			return false;
-//				
-//		for(int i = 0; i < nbrEvts; i++) {
-//			CalendarEvent ce = evts.get(i);			
-//			if(ce.changesRingMode()) {
-//				if(ce.matchesEndTime(millis)) {					
-//					mAudioManager.setRingerMode(ce.getEndRingMode());
-//					showRingChangeAlert();
-//					evts.remove(i);
-//					return true;
-//				}
-//				/* If more than one calendar has an event at the same time it would 
-//				 * be possible for one event to be bypassed by the match and never be 
-//				 * removed from the collection. This should get rid of any stragglers. 
-//				 */
-//				else if(ce.endTimeHasPassed(millis)) {					
-//					evts.remove(i);
-//				}
-//			}
-//			ce = null;
-//		}		
-//		return false;
-//	}
-//	
-//	
-//	private ArrayList<CalendarEvent> getTodaysCalEvents(long millis) throws NullContentProviderException {
-//		
-//	    ContentResolver contentResolver = this.getContentResolver();
-//	    final Cursor cursor = contentResolver.query(Uri.parse("content://calendar/calendars"),
-//	    		(new String[] {"_id"}), null, null, null);
-//	    
-//	    if (cursor == null)
-//	    	throw new NullContentProviderException("This version of android does not have the calendar app present.");
-//	    
-//	    ArrayList<String> ids = new ArrayList<String>();
-//	    
-//	    while (cursor.moveToNext()) {
-//	    	ids.add(cursor.getString(0));   		    	
-//	    } 
-//	    
-//	    Uri.Builder builder = Uri.parse("content://calendar/instances/when").buildUpon();
-//	    
-//	   
-//	    ContentUris.appendId(builder, millis);
-//	    ContentUris.appendId(builder, millis);
-//	    
-//	    Cursor eventCursor;
-//	    	    
-//	    ArrayList<CalendarEvent> calEvents = new ArrayList<CalendarEvent>();
-//	    
-//	    for (int i = 0; i < ids.size(); i++) {
-//	    	
-//		     eventCursor = getContentResolver().query(builder.build(),
-//		    		new String[] { "description", "begin", "end", "allDay"}, "Calendars._id=" + ids.get(i),
-//		    		null, "begin ASC");
-//		    if (eventCursor.getCount() != 0) {
-//			    while (eventCursor.moveToNext()) {
-//			    	calEvents.add(new CalendarEvent(				    	
-//				    	new Date(eventCursor.getLong(1)),
-//				        new Date(eventCursor.getLong(2)),
-//				    	!eventCursor.getString(3).equals("0"),
-//				    	eventCursor.getString(0)
-//			    	));			    	
-//			    }
-//			    eventCursor = null;				   
-//		    }    	
-//	    }
-//	
-//	    return calEvents;	     
-//    }
-	
+	/**
+	 * Listen for request of the state of showing scharing alerts. If a broadcast is 
+	 * recieved respond with on of two intents letting the requester know true or false
+	 */
+	public class ShowAlertsStateListener extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if(mShowAlerts) {
+				sendBroadcast(new Intent(ScharingIntents.SHOW_SHARING_ALERTS));
+			}
+			else {
+				sendBroadcast(new Intent(ScharingIntents.HIDE_SHARING_ALERTS));		
+			}
+		}	
+	}
 	
 	private void showRingChangeAlert() {
 		if(mShowAlerts)

@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.xml.sax.Parser;
+
 import android.content.Context;
 
 /**
@@ -39,9 +41,7 @@ import android.content.Context;
  * again in order to retain the schedule across restarts.
  */
 public class Schedule implements java.io.Serializable {
-	
-	
-	
+		
 	/**
 	*An array of HashMaps who's indexes mimic the days of the week 
 	*as set up in class android.text.format.Time. Each 
@@ -51,7 +51,8 @@ public class Schedule implements java.io.Serializable {
 	*/
 	private ArrayList<HashMap<String, Integer>> mWeek ;
 	private static final long serialVersionUID = 1L;
-		
+	//temp variable testing if properties file loading and saving is causing schedule to be dumped
+	private boolean mShowAlerts;
 	
 	
 	public static final String FILENAME = "schedule.obj";
@@ -59,6 +60,14 @@ public class Schedule implements java.io.Serializable {
 	public static final String RINGER_MODE = "RINGER_MODE";
 	public static final String SCHEDULE_DOW = "SCHEDULE_DOW";
 	
+	//public getter and setter for testing properties file issue.
+	public boolean getShowAlerts() {
+		return mShowAlerts;	
+	}
+	
+	public void setShowAlerts(boolean showAlerts) {
+		mShowAlerts = showAlerts;		
+	}
 	
 	public String getSchedulesFileNameOnDisk() {
 		return FILENAME;
@@ -77,6 +86,7 @@ public class Schedule implements java.io.Serializable {
 	
 	
 	public Schedule() {	
+		mShowAlerts = true;
         int nbrDaysInWeek = 7;
 		mWeek = new ArrayList<HashMap<String, Integer>>(nbrDaysInWeek);
 		for(int i = 0; i < nbrDaysInWeek; i++) {

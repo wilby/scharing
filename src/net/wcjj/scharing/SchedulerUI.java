@@ -23,8 +23,11 @@ package net.wcjj.scharing;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
@@ -43,27 +46,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import net.wcjj.scharing.Service.ScharingSetAlertsListener;
+
 public class SchedulerUI extends Activity {
-    
-	
-	
+    	
 	private final String TAG = "SCHARING_SCHEDULER";	
-	
+	private boolean mShowAlerts;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {    	    	
         super.onCreate(savedInstanceState);        
         setContentView(R.layout.scheduler_ui);
-        
+        registerReceiver(new ScharingShowAlertsStateListener(), new IntentFilter(ScharingIntents.HIDE_SHARING_ALERTS));
+		registerReceiver(new ScharingShowAlertsStateListener(), new IntentFilter(ScharingIntents.SHOW_SHARING_ALERTS));
+		
         //Start the Scharing service.
         Intent servIntent = new Intent(this, net.wcjj.scharing.Service.class);
     	startService(servIntent);   
 	 	
     	//Populat the spinner
     	InitializeSpinners();
-    }      
-  
-    
+    }        
         
     @Override
 	protected void onPause() {
@@ -74,27 +77,30 @@ public class SchedulerUI extends Activity {
 			Log.e(TAG, Log.getStackTraceString(e));
 		}
 		super.onPause();
-	}
-    
-    
+	}  
         
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.schedulerui_menu, menu);
-		//Set the icon for the show alerts menu item based on the user 
-		//set properties that are saved across instances
-		if (Service.getShowAlerts()) {
+		sendBroadcast(new Intent(ScharingIntents.REQUEST_SHOW_ALERTS_STATE));
+		if (mShowAlerts) {
 			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.checkedbox));
 		}
 		else {
 			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.uncheckedbox));
 		}
 		return true;
-	}
+	}    
     
+    public class ScharingShowAlertsStateListener extends BroadcastReceiver {    
+    	@Override
+		public void onReceive(Context context, Intent intent) {
+    		mShowAlerts = intent.getAction().equals(ScharingIntents.SHOW_SHARING_ALERTS) ? true :  false;    		    	    
+    	}
     
+    } 
     
     /**
      * This event is run when a menu item is clicked on the options (icon) menu
@@ -111,13 +117,13 @@ public class SchedulerUI extends Activity {
         case SHOW_ALERTS_ID:        	
         	if (item.isChecked()) {
         		item.setChecked(false);
-    			item.setIcon(getResources().getDrawable(R.drawable.uncheckedbox));   
-    			Service.setShowAlerts(false);
+    			item.setIcon(getResources().getDrawable(R.drawable.uncheckedbox));   		
+    			sendBroadcast(new Intent(ScharingIntents.HIDE_SHARING_ALERTS));
     		}
     		else {
     			item.setChecked(true);
-    			item.setIcon(getResources().getDrawable(R.drawable.checkedbox));
-    			Service.setShowAlerts(true);
+    			item.setIcon(getResources().getDrawable(R.drawable.checkedbox));    			
+    			sendBroadcast(new Intent(ScharingIntents.SHOW_SHARING_ALERTS));
     		}
         	
         	Properties props = new Properties();
@@ -156,9 +162,7 @@ public class SchedulerUI extends Activity {
             return true;        
         }
         return false;
-    }
-    
-    
+    }  
         
     /**
      * Setup databinding for the spinners on the ui.
@@ -185,7 +189,6 @@ public class SchedulerUI extends Activity {
 	    
 	    
     }   
-    
     
     
     /**
