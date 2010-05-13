@@ -43,6 +43,8 @@ public class Utilities {
 		"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
 		"Friday", "Saturday", "Weekdays", "Weekend"
 	};
+	public static final String PREFERENCES_SHOW_ALERTS_VARIABLE_NAME = "showAlerts";
+	public static final String PREFERENCES_FILENAME = "scharingPreferences";
 	
 	
 	public static void scharingNotification(Context context, String message) {

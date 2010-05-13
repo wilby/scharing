@@ -31,8 +31,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.xml.sax.Parser;
-
 import android.content.Context;
 
 /**

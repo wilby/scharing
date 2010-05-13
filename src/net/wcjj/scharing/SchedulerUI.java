@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
@@ -41,14 +42,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 
-import net.wcjj.scharing.Service.ScharingSetAlertsListener;
 
-public class SchedulerUI extends Activity {
+public class SchedulerUI extends Activity implements IScharingPreferences {
     	
 	private final String TAG = "SCHARING_SCHEDULER";	
 	private boolean mShowAlerts;
@@ -66,6 +63,8 @@ public class SchedulerUI extends Activity {
 	 	
     	//Populat the spinner
     	InitializeSpinners();
+    	
+    	loadPreferences();
     }        
         
     @Override
@@ -73,6 +72,7 @@ public class SchedulerUI extends Activity {
     	//Make sure that user changes are saved when the UI focus is lost
     	try {
 			Service.getRingSchedule().saveSchedule(this);
+			savePreferences();
 		} catch (IOException e) {
 			Log.e(TAG, Log.getStackTraceString(e));
 		}
@@ -119,33 +119,14 @@ public class SchedulerUI extends Activity {
         		item.setChecked(false);
     			item.setIcon(getResources().getDrawable(R.drawable.uncheckedbox));   		
     			sendBroadcast(new Intent(ScharingIntents.HIDE_SHARING_ALERTS));
+    			savePreferences();
     		}
     		else {
     			item.setChecked(true);
     			item.setIcon(getResources().getDrawable(R.drawable.checkedbox));    			
     			sendBroadcast(new Intent(ScharingIntents.SHOW_SHARING_ALERTS));
-    		}
-        	
-        	Properties props = new Properties();
-        	props.setProperty("showalerts", String.valueOf(item.isChecked()));
-    	    FileOutputStream fos; 
-           	String message = "User preferences were not saved on shutdown.";
-    		try {
-    			fos = this.openFileOutput(Service.APP_PROPERTIES_FILENAME, Service.MODE_PRIVATE);
-    			props.store(fos, "Save Properties before shutdown.");
-    			fos.close();
-    		} catch (FileNotFoundException e) {
-    			Log.d(TAG, e.getStackTrace().toString());
-    			Utilities.scharingNotification(this, message);
-    			
-    		} catch (IOException e) {
-    			Log.d(TAG, e.getStackTrace().toString());
-    			Utilities.scharingNotification(this, message);
-    		}
-    		finally {
-    			props = null;
-    			fos = null;
-    		}
+    			savePreferences();
+    		}        	
             return true; 
     	case SCHEDULERUI_HELP_ID:
     		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -300,6 +281,20 @@ public class SchedulerUI extends Activity {
      	Intent i = new Intent(this, WeekViewDeleteUI.class);
     	startActivity(i);	
     }  
+    
+    public void loadPreferences() {
+        // Restore preferences
+        SharedPreferences settings = getSharedPreferences(Utilities.PREFERENCES_FILENAME, MODE_PRIVATE);
+        mShowAlerts = settings.getBoolean(Utilities.PREFERENCES_SHOW_ALERTS_VARIABLE_NAME, true); 
+    }
+    
+    public void savePreferences() {
+    	    	 
+        SharedPreferences settings = getSharedPreferences(Utilities.PREFERENCES_FILENAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(Utilities.PREFERENCES_SHOW_ALERTS_VARIABLE_NAME, mShowAlerts);        
+        editor.commit();
+    }
     
 }
 
