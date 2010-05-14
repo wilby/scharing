@@ -45,15 +45,12 @@ public class Service extends android.app.Service implements IScharingPreferences
 	
 	private AudioManager mAudioManager;	
 	private final String TAG = "Scharing_Service";	
-	public static final String APP_PROPERTIES_FILENAME = "app.properties";	
-	private static boolean mShowAlerts;
+	private boolean mShowAlerts;
 	private static Schedule mRingSchedule;
-	
-	
+		
 	public static Schedule getRingSchedule() {
 		return mRingSchedule;
-	}
-		
+	}		
 	
 	@Override
 	public void onCreate() {				
@@ -62,7 +59,51 @@ public class Service extends android.app.Service implements IScharingPreferences
 		registerReceiver(new ScharingSetAlertsListener(), new IntentFilter(ScharingIntents.SHOW_SHARING_ALERTS));
 		
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);	
-			
+	
+		loadRingSchedule();
+		loadPreferences();		
+	}	
+	
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+	    Log.i(TAG, TAG + " started.");
+	    // Continue running until it is explicitly stopped.
+	    return START_STICKY;
+	}
+	
+	@Override
+	public void onDestroy()  {
+		  //Save our schedule if the services is killed, this is not working.
+	      //saveRingSchedule();
+	      savePreferences();
+	      //Let the user know that their next schedule ringer mode
+	      //change will not occur.
+	  	  Utilities.scharingNotification(getApplicationContext(), 
+	  	       	getString(R.string.service_shutdown_warning));
+	  	  
+		mRingSchedule = null;
+		mAudioManager = null;		
+		super.onDestroy();
+	}	
+	
+	@Override
+	public IBinder onBind(Intent arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	private void showRingChangeAlert() {
+		if(mShowAlerts)
+			Utilities.scharingNotification(getApplicationContext(), 
+					getString(R.string.ring_mode_changed) 
+					+ " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");	
+	}		
+	
+	/**
+	 * De-serialize the schedule object from disk.
+	 */
+	private void loadRingSchedule() {
 		try {
 			boolean fileNameMatches = false;
 			String schedulesFileName = "schedule.obj";
@@ -81,75 +122,33 @@ public class Service extends android.app.Service implements IScharingPreferences
 				//First run create and persists schedule
 				mRingSchedule = new Schedule();
 				mRingSchedule.saveSchedule(this);
-			}
-			loadPreferences();
-			
+			}						
 		} 
 		catch (IOException e) {
 			Log.e(TAG, Log.getStackTraceString(e));
 		} catch (ClassNotFoundException e) {
 			Log.e(TAG, Log.getStackTraceString(e));
-		}
-		
+		}		
 	}
-	
-	
-	
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-	    Log.i(TAG, TAG + " started.");
-	    // Continue running until it is explicitly stopped.
-	    return START_STICKY;
-	}	
-	
-	
-	
-	@Override
-	public void onDestroy()  {		
-		mRingSchedule = null;
-		mAudioManager = null;		
-		super.onDestroy();
-	}
-	
-	
-	public void stopService() {
-      //Save our schedule if the services is killed
-      save();
-      savePreferences();
-      mRingSchedule = null;      
-	}
-		
-	
-	
-	
-	@Override
-	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	
 	/**
-	 * Save the schedule and let the user know that their next 
-	 * ringer mode change will not occur.
+	 * Save the ringer mode schedule. Serialize to disk.	 
 	 */
-    private void save() {
-    	  try {
-    		mRingSchedule.setShowAlerts(mShowAlerts);
-  	       	mRingSchedule.saveSchedule(this);  	       	
-  	       	Utilities.scharingNotification(getApplicationContext(), 
-  	       	getString(R.string.service_shutdown_warning));
+    private void saveRingSchedule() {
+    	  try {    		
+  	       	mRingSchedule.saveSchedule(getApplicationContext()); 	       
   	    } catch (IOException e) {  	       		
   	       	Log.e(TAG, e.getMessage());
   	    }
-    }	
+    }	    
     
+    //IScharingPreferences implementation    
     public void loadPreferences() {
         // Restore preferences
         SharedPreferences settings = getSharedPreferences(Utilities.PREFERENCES_FILENAME, MODE_PRIVATE);
         mShowAlerts = settings.getBoolean(Utilities.PREFERENCES_SHOW_ALERTS_VARIABLE_NAME, true); 
     }
-    
+        
     public void savePreferences() {
     	    	 
         SharedPreferences settings = getSharedPreferences(Utilities.PREFERENCES_FILENAME, MODE_PRIVATE);
@@ -157,14 +156,8 @@ public class Service extends android.app.Service implements IScharingPreferences
         editor.putBoolean(Utilities.PREFERENCES_SHOW_ALERTS_VARIABLE_NAME, mShowAlerts);        
         editor.commit();
     }
-    
-
- 
-   
- 
-
 	
-	
+    //Broadcast Receivers
 	/**
 	*Respond to system time advancements, occurs every one minute.
 	*If there is a matching day/time in the schedule then change the ringer 
@@ -188,6 +181,10 @@ public class Service extends android.app.Service implements IScharingPreferences
 		}
 	}
 
+	/**
+	 *Respond to intents that are being broadcast to let us know that  
+	 *the user has changed their show alerts preference. 
+	 */
 	public class ScharingSetAlertsListener extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -196,8 +193,8 @@ public class Service extends android.app.Service implements IScharingPreferences
 	}
 	
 	/**
-	 * Listen for request of the state of showing scharing alerts. If a broadcast is 
-	 * recieved respond with on of two intents letting the requester know true or false
+	 * Listen for request of the state of showing scharing alerts (REQUEST_SHARING_ALERTS_STATE). If a broadcast is 
+	 * recieved respond with one of two intents letting the requester know true or false
 	 */
 	public class ShowAlertsStateListener extends BroadcastReceiver {
 		@Override
@@ -211,13 +208,7 @@ public class Service extends android.app.Service implements IScharingPreferences
 		}	
 	}
 	
-	private void showRingChangeAlert() {
-		if(mShowAlerts)
-			Utilities.scharingNotification(getApplicationContext(), 
-					getString(R.string.ring_mode_changed) 
-					+ " " + Utilities.RINGER_MODES_TEXT[mAudioManager.getRingerMode()] + " @: ");
 	
-	}
 }
 
 

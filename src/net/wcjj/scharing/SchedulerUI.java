@@ -61,9 +61,8 @@ public class SchedulerUI extends Activity implements IScharingPreferences {
         Intent servIntent = new Intent(this, net.wcjj.scharing.Service.class);
     	startService(servIntent);   
 	 	
-    	//Populat the spinner
-    	InitializeSpinners();
-    	
+    	//Populate the spinners in the UI
+    	InitializeSpinners();    	
     	loadPreferences();
     }        
         
@@ -83,8 +82,8 @@ public class SchedulerUI extends Activity implements IScharingPreferences {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.schedulerui_menu, menu);
-		sendBroadcast(new Intent(ScharingIntents.REQUEST_SHOW_ALERTS_STATE));
+		inflater.inflate(R.menu.schedulerui_menu, menu);		
+		
 		if (mShowAlerts) {
 			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.checkedbox));
 		}
@@ -208,9 +207,7 @@ public class SchedulerUI extends Activity implements IScharingPreferences {
    
     
     
-    //Listeners
-    
-    
+    //Listeners    
     
     public void btnAddRingerChangeSchedule_Click(View v) {    	
     	int weekday,ringerMode;
@@ -281,6 +278,8 @@ public class SchedulerUI extends Activity implements IScharingPreferences {
      	Intent i = new Intent(this, WeekViewDeleteUI.class);
     	startActivity(i);	
     }  
+    
+    //IScharingPrefernces implementation
     
     public void loadPreferences() {
         // Restore preferences
