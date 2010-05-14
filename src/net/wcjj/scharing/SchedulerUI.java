@@ -90,6 +90,8 @@ public class SchedulerUI extends Activity implements IScharingPreferences {
 		else {
 			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.uncheckedbox));
 		}
+		
+		
 		return true;
 	}    
     
@@ -127,7 +129,7 @@ public class SchedulerUI extends Activity implements IScharingPreferences {
     			savePreferences();
     		}        	
             return true; 
-    	case SCHEDULERUI_HELP_ID:
+    	case SCHEDULERUI_HELP_ID:    		
     		AlertDialog.Builder builder = new AlertDialog.Builder(this);
         	builder.setTitle(R.string.schedulerui_helpdialog_title)
         			.setMessage(getString(R.string.schedulerui_helpdialog_message))
