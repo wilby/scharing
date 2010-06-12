@@ -129,18 +129,7 @@ public class Service extends android.app.Service implements IScharingPreferences
 		} catch (ClassNotFoundException e) {
 			Log.e(TAG, Log.getStackTraceString(e));
 		}		
-	}
-	
-	/**
-	 * Save the ringer mode schedule. Serialize to disk.	 
-	 */
-    private void saveRingSchedule() {
-    	  try {    		
-  	       	mRingSchedule.saveSchedule(getApplicationContext()); 	       
-  	    } catch (IOException e) {  	       		
-  	       	Log.e(TAG, e.getMessage());
-  	    }
-    }	    
+	}		    
     
     //IScharingPreferences implementation    
     public void loadPreferences() {
