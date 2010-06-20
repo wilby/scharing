@@ -1,12 +1,12 @@
 v2.0
 Unfortunate first release version due to being handled in the manifest.
 
-v2.1
-
+v3.0
 Added batch delete feature
 Added calendar events feature
 Added option to show alerts
 fixed bug where manual entry in time picker will now update properly.
 Day of week spinner now defaults to today's weekday
+Changed the internal calls from static to intents
 
 Starting test framework

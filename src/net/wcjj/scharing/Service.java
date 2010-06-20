@@ -1,5 +1,7 @@
 /**
- * 	 Scharing - Allows you to set a ring, vibrate and silence shedule for your android device.
+ * 	  Scharing - Allows you to set a ring, vibrate and silence shedule for your 
+ * 	  android device.
+ *   
  *    Copyright (C) 2009  Wilby C. Jackson Jr.
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -62,14 +64,14 @@ public class Service extends android.app.Service {
 	public void onCreate() {
 		registerReceiver(new TimeTickListener(), new IntentFilter(
 				Intent.ACTION_TIME_TICK));
-		registerReceiver(new ScharingSetAlertsListener(), new IntentFilter(
-				ScharingIntents.HIDE_SHARING_ALERTS));
-		registerReceiver(new ScharingSetAlertsListener(), new IntentFilter(
-				ScharingIntents.SHOW_SHARING_ALERTS));
-		registerReceiver(new ScharingSetAlertsListener(), new IntentFilter(
-				ScharingIntents.REQUEST_SHOW_ALERTS_STATE));
+		registerReceiver(new ScharingSetAlertsListener(), 
+				new IntentFilter(ScharingIntents.HIDE_SHARING_ALERTS));
+		registerReceiver(new ScharingSetAlertsListener(), 
+				new IntentFilter(ScharingIntents.SHOW_SHARING_ALERTS));
+		registerReceiver(new ScharingSetAlertsListener(), 
+				new IntentFilter(ScharingIntents.REQUEST_SHOW_ALERTS_STATE));
 
-		mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 		mActiveCalEvents = new ArrayList<CalendarEvent>();
 
 		try {
@@ -116,14 +118,13 @@ public class Service extends android.app.Service {
 
 	public void stopService() {
 		// Save our schedule if the services is killed
-		save();
+		saveSchedule();
 		savePreferences();
 		mRingSchedule = null;
 	}
 
 	@Override
-	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
+	public IBinder onBind(Intent arg0) {		
 		return null;
 	}
 
@@ -131,13 +132,12 @@ public class Service extends android.app.Service {
 	 * Save the schedule and let the user know that their next ringer mode
 	 * change will not occur.
 	 */
-	private void save() {
+	private void saveSchedule() {
 		try {
 			mRingSchedule.saveSchedule(this);
 			Utilities.scharingNotification(getApplicationContext(),
 					getString(R.string.service_shutdown_warning));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) {			
 			Log.e(TAG, e.getMessage());
 		}
 	}
@@ -198,8 +198,8 @@ public class Service extends android.app.Service {
 	}
 
 	/**
-	 * Cycle through the currently active events a determine if one of their end
-	 * times matches the millis parameter.
+	 * Cycle through the currently active events and determine if one of 
+	 * the end times matches the millis parameter.
 	 * 
 	 * @param millis
 	 *            The date in milliseconds to be compared to the ending event
@@ -248,7 +248,7 @@ public class Service extends android.app.Service {
 
 		if (cursor == null)
 			throw new NullContentProviderException(
-					"This version of android does not have the calendar app present.");
+			"This version of android does not have the calendar app present.");
 
 		ArrayList<String> ids = new ArrayList<String>();
 

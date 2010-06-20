@@ -169,7 +169,8 @@ public class Schedule implements java.io.Serializable {
 	 */
 	public ArrayList<HashMap<String, String>> toSimpleAdapterMap(int day) {
 		String[] ringModes = Utilities.RINGER_MODES_TEXT;
-		ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
+		ArrayList<HashMap<String, String>> list = 
+			new ArrayList<HashMap<String, String>>();
 		ArrayList<HashMap<String, Integer>> week = mWeek;
 
 		// Hashmaps are not sorted, utilizing collection sorting so that
