@@ -45,26 +45,30 @@ public class BatchDeleteUI extends Activity {
 		TimePicker tpStartTime = (TimePicker) findViewById(R.id.tpBatchTime);
 		TextView tvMessages = (TextView) findViewById(R.id.tvBatchDeleteMessages);
 
-		String time = Utilities.toScheduleTimeFormat(tpStartTime);
+		Time time =  new Time();
+		time.set(00, tpStartTime.getCurrentMinute(), 
+				tpStartTime.getCurrentHour(), 01, 01, 1970);
+		long timeInMillis = time.toMillis(true);
+		
 		int selectedValue = spWeekday.getSelectedItemPosition();
 		Schedule ringSchedule = Service.getRingSchedule();
 
 		if (selectedValue == weekdays) {
 			for (int i = Time.MONDAY; i <= Time.FRIDAY; i++) {
-				if (ringSchedule.hasTime(i, time))
-					ringSchedule.delRingSchedule(i, time);
+				if (ringSchedule.hasTime(i, timeInMillis))
+					ringSchedule.delRingSchedule(i, timeInMillis);
 			}
 		} else if (selectedValue == weekends) {
-			if (ringSchedule.hasTime(Time.SUNDAY, time)) {
-				ringSchedule.delRingSchedule(Time.SUNDAY, time);
-				if (ringSchedule.hasTime(Time.SATURDAY, time))
-					ringSchedule.delRingSchedule(Time.SATURDAY, time);
+			if (ringSchedule.hasTime(Time.SUNDAY, timeInMillis)) {
+				ringSchedule.delRingSchedule(Time.SUNDAY, timeInMillis);
+				if (ringSchedule.hasTime(Time.SATURDAY, timeInMillis))
+					ringSchedule.delRingSchedule(Time.SATURDAY, timeInMillis);
 
 			} else {
 
 				for (int i = Time.SUNDAY; i <= Time.SATURDAY; i++) {
-					if (ringSchedule.hasTime(i, time))
-						ringSchedule.delRingSchedule(i, time);
+					if (ringSchedule.hasTime(i, timeInMillis))
+						ringSchedule.delRingSchedule(i, timeInMillis);
 				}
 			}
 		}

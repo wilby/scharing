@@ -153,14 +153,13 @@ public class Service extends android.app.Service {
 			long millis = System.currentTimeMillis();
 
 			if (!setModeByCalEventEnd(millis)) {
-				if (!setModeByCalEventBegin(millis)) {
-					String strTime = Utilities.toScheduleTimeFormat(millis);
+				if (!setModeByCalEventBegin(millis)) {					
 					Time t = new Time();
 					t.set(millis);
 					int weekday = t.weekDay;
-					if (mRingSchedule.hasTime(weekday, strTime)) {
+					if (mRingSchedule.hasTime(weekday, millis)) {
 						mAudioManager.setRingerMode(mRingSchedule
-								.getRingerMode(weekday, strTime));
+								.getRingerMode(weekday, millis));
 						showRingChangeAlert();
 					}
 				}

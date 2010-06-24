@@ -32,17 +32,18 @@ import android.widget.TimePicker;
 public class Utilities {
 
 	private static final int RINGER_MODE_CHANGE_NOTIFY_ID = 1;
-	private static final String RINGER_MODE_CHANGE_NOTIFY_TAG = "RINGER MODE CHANGED";
-
-	// Sunday - Saturday = 0-6, The following constants match the
-	// positions these selections occur in Scheduler.java's main.xml dropdown
-	// for days.
+	private static final String 
+	RINGER_MODE_CHANGE_NOTIFY_TAG =	"RINGER MODE CHANGED";	
 	public static final String PREFERENCES_FILENAME = "ScharingPreferences";
 	public static final String PREFERENCES_FIELD_SHOW_ALERTS = "showAlerts";
+	public static final String PREFERENCES_FIELD_12_HOUR_CLOCK = "clock";
 	public static final int WEEKDAYS = 7;
 	public static final int WEEKENDS = 8;
 	public static final String[] RINGER_MODES_TEXT = { "Silent", "Vibrate",
 			"Ring" };
+	// Sunday - Saturday = 0-6, The following constants match the
+	// positions these selections occur in Scheduler.java's main.xml dropdown
+	// for days.
 	public static final String[] DAYS_OF_WEEK_TEXT = { "Sunday", "Monday",
 			"Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
 			"Weekdays", "Weekend" };
@@ -85,5 +86,14 @@ public class Utilities {
 
 		return t;
 	}
+	
+	public static Time normalizeToScharingTime(int hour, int min) {
+		Time t = new Time();
+		//epoch day, custom hour and minutes
+		//set time to sec, min, hour, day, month, year
+		t.set(00, min, hour, 1, 1, 1970);
+		return t;
+	}
+
 
 }

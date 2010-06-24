@@ -201,7 +201,7 @@ public class SchedulerUI extends Activity {
 	 * @param tvMessages
 	 *            The message to display to the user.
 	 */
-	private void addSchedules(int ringerMode, int weekday, String startTime,
+	private void addSchedules(int ringerMode, int weekday, Long startTime,
 			TextView tvMessages) {
 		if (Service.getRingSchedule().hasTime(weekday, startTime)) {
 			updateSchedules(ringerMode, weekday, startTime, tvMessages);
@@ -227,7 +227,7 @@ public class SchedulerUI extends Activity {
 	 * @param tvMessages
 	 *            The message to display to the user.
 	 */
-	private void updateSchedules(int ringerMode, int weekday, String startTime,
+	private void updateSchedules(int ringerMode, int weekday, Long startTime,
 			TextView tvMessages) {
 		String messageSeperator = getString(R.string.message_seperator);
 		Service.getRingSchedule().updateRingSchedule(weekday, startTime,
@@ -247,7 +247,7 @@ public class SchedulerUI extends Activity {
 
 	public void btnAddRingerChangeSchedule_Click(View v) {
 		int weekday, ringerMode;
-		String startTime;
+		Time startTime;
 
 		// Grab the views in the ui.
 		Spinner spWeekday = (Spinner) findViewById(R.id.spWeekday);
@@ -257,7 +257,11 @@ public class SchedulerUI extends Activity {
 		tpStartTime.requestFocus();
 
 		weekday = spWeekday.getSelectedItemPosition();
-		startTime = Utilities.toScheduleTimeFormat(tpStartTime);
+		startTime = Utilities.normalizeToScharingTime(
+				tpStartTime.getCurrentHour(),
+				tpStartTime.getCurrentMinute()
+		);
+		long millis = startTime.toMillis(true);
 		ringerMode = spRingerMode.getSelectedItemPosition();
 
 		final ScrollView svMessages = (ScrollView) findViewById(R.id.svMessages);
@@ -271,14 +275,14 @@ public class SchedulerUI extends Activity {
 			int mon = 1;
 			int fri = 5;
 			for (int i = mon; i <= fri; i++)
-				addSchedules(ringerMode, i, startTime, tvMessages);
+				addSchedules(ringerMode, i, millis, tvMessages);
 		} else if (weekday == Utilities.WEEKENDS) {
 			int sat = 6;
 			int sun = 0;
-			addSchedules(ringerMode, sat, startTime, tvMessages);
-			addSchedules(ringerMode, sun, startTime, tvMessages);
+			addSchedules(ringerMode, sat, millis, tvMessages);
+			addSchedules(ringerMode, sun, millis, tvMessages);
 		} else {
-			addSchedules(ringerMode, weekday, startTime, tvMessages);
+			addSchedules(ringerMode, weekday, millis, tvMessages);
 		}
 
 		/**

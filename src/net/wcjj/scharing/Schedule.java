@@ -33,6 +33,8 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import android.content.Context;
+import android.text.format.DateUtils;
+import android.text.format.Time;
 
 /**
  * Schedule holds the days and times that the ringer mode will be changed. It
@@ -48,7 +50,7 @@ public class Schedule implements java.io.Serializable {
 	 * 
 	 * @example: 0 = Sunday, 1 = Monday etc....
 	 */
-	private ArrayList<HashMap<String, Integer>> mWeek;
+	private ArrayList<HashMap<Long, Integer>> mWeek;
 	private static final long serialVersionUID = 1L;
 
 	public static final String FILENAME = "schedule.obj";
@@ -60,31 +62,33 @@ public class Schedule implements java.io.Serializable {
 		return FILENAME;
 	}
 
-	public ArrayList<HashMap<String, Integer>> getWeek() {
+	public ArrayList<HashMap<Long, Integer>> getWeek() {
 		return mWeek;
 	}
 
-	public HashMap<String, Integer> getDay(int dayOfWeek) {
+	public HashMap<Long, Integer> getDay(int dayOfWeek) {
 		return mWeek.get(dayOfWeek);
 	}
 
 	public Schedule() {
 		int nbrDaysInWeek = 7;
-		mWeek = new ArrayList<HashMap<String, Integer>>(nbrDaysInWeek);
+		mWeek = new ArrayList<HashMap<Long, Integer>>(nbrDaysInWeek);
 		for (int i = 0; i < nbrDaysInWeek; i++) {
-			mWeek.add(i, new HashMap<String, Integer>());
+			mWeek.add(i, new HashMap<Long, Integer>());
 		}
 	}
 
-	public void addRingSchedule(int ringerMode, int dayOfWeek, String startTime)
+	public void addRingSchedule(int ringerMode, int dayOfWeek, Long startTime)
 			throws IllegalArgumentException {
+		Time t = new Time();
+		t.set(startTime);
 		if (mWeek.get(dayOfWeek).containsKey(startTime))
 			throw new IllegalArgumentException(
 					"A ring mode change is already scheduled for that time");
 		mWeek.get(dayOfWeek).put(startTime, ringerMode);
 	}
 
-	public void delRingSchedule(int dayOfWeek, String startTime)
+	public void delRingSchedule(int dayOfWeek, Long startTime)
 			throws IllegalArgumentException {
 		if (mWeek.get(dayOfWeek).containsKey(startTime)) {
 			mWeek.get(dayOfWeek).remove(startTime);
@@ -100,7 +104,7 @@ public class Schedule implements java.io.Serializable {
 		}
 	}
 
-	public void updateRingSchedule(int dayOfWeek, String startTime,
+	public void updateRingSchedule(int dayOfWeek, Long startTime,
 			int newRingMode) throws IllegalArgumentException {
 		if (mWeek.get(dayOfWeek).containsKey(startTime)) {
 			delRingSchedule(dayOfWeek, startTime);
@@ -111,11 +115,13 @@ public class Schedule implements java.io.Serializable {
 		}
 	}
 
-	public boolean hasTime(int dayOfWeek, String startTime) {
+	public boolean hasTime(int dayOfWeek, Long startTime) {
 		return mWeek.get(dayOfWeek).containsKey(startTime);
 	}
 
-	public int getRingerMode(int dayOfWeek, String startTime) {
+	public int getRingerMode(int dayOfWeek, Long startTime) {
+		if(!mWeek.get(dayOfWeek).containsKey(startTime))
+			return -1;
 		return mWeek.get(dayOfWeek).get(startTime);
 	}
 
@@ -155,6 +161,7 @@ public class Schedule implements java.io.Serializable {
 		}
 
 	}
+		
 
 	/**
 	 * I could have extended a ListAdapter and created a way to handle Schedule
@@ -167,28 +174,28 @@ public class Schedule implements java.io.Serializable {
 	 *            The int value for the day of the week to return the Map
 	 * @return
 	 */
-	public ArrayList<HashMap<String, String>> toSimpleAdapterMap(int day) {
-		String[] ringModes = Utilities.RINGER_MODES_TEXT;
-		ArrayList<HashMap<String, String>> list = 
-			new ArrayList<HashMap<String, String>>();
-		ArrayList<HashMap<String, Integer>> week = mWeek;
-
-		// Hashmaps are not sorted, utilizing collection sorting so that
-		// items are displayed in time asending order in the days listview.
-		Vector<String> v = new Vector<String>(week.get(day).keySet());
-		Collections.sort(v);
-		Iterator<String> it = v.iterator();
-
-		while (it.hasNext()) {
-			String key = it.next();
-			HashMap<String, String> tempMap = new HashMap<String, String>(3);
-			tempMap.put(SCHEDULE_DOW, String.valueOf(day));
-			tempMap.put(SCHEDULED_TIME, key);
-			tempMap.put(RINGER_MODE, ringModes[week.get(day).get(key)]);
-			list.add(tempMap);
-		}
-
-		return list;
-	}
+//	public ArrayList<HashMap<String, String>> toSimpleAdapterMap(int day) {
+//		String[] ringModes = Utilities.RINGER_MODES_TEXT;
+//		ArrayList<HashMap<String, String>> list = 
+//			new ArrayList<HashMap<String, String>>();
+//		ArrayList<HashMap<Long, Integer>> week = mWeek;
+//
+//		// Hashmaps are not sorted, utilizing collection sorting so that
+//		// items are displayed in time asending order in the days listview.
+//		Vector<String> v = new Vector<String>(week.get(day).keySet());
+//		Collections.sort(v);
+//		Iterator<String> it = v.iterator();
+//
+//		while (it.hasNext()) {
+//			String key = it.next();
+//			HashMap<String, String> tempMap = new HashMap<String, String>(3);
+//			tempMap.put(SCHEDULE_DOW, String.valueOf(day));
+//			tempMap.put(SCHEDULED_TIME, key);
+//			tempMap.put(RINGER_MODE, ringModes[week.get(day).get(key)]);
+//			list.add(tempMap);
+//		}
+//
+//		return list;
+//	}
 
 }
