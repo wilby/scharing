@@ -104,8 +104,9 @@ public class DailyScheduleListActivity extends ListActivity {
 								Integer.parseInt(hourMins[1])
 			              );
 						ringSchedule.delRingSchedule(WEEK_DAY, 
-								time.toMillis(true));
-						row.setVisibility(View.GONE);
+								time.toMillis(true));						
+						mAdapter.notifyDataSetChanged();						
+						//row.setVisibility(View.GONE);
 					}
 				}
 			}
