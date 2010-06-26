@@ -49,15 +49,9 @@ public class DailyScheduleListActivity extends ListActivity {
 		setContentView(R.layout.lv_container);
 
 		this.setTitle(Utilities.DAYS_OF_WEEK_TEXT[WEEK_DAY]);
-		
-//		mSa = new SimpleAdapter(this, Service.getRingSchedule()
-//				.toSimpleAdapterMap(DailyScheduleListActivity.WEEK_DAY),
-//				R.layout.daily_schedule_list_row, new String[] {
-//						Schedule.SCHEDULE_DOW, Schedule.SCHEDULED_TIME,
-//						Schedule.RINGER_MODE }, new int[] { R.id.txtId,
-//						R.id.txtTime, R.id.txtRingMode });
 		Schedule schedule = Service.getRingSchedule();
-		mAdapter = new DailyScheduleAdapter(this, schedule.getDay(WEEK_DAY));
+		mAdapter = new DailyScheduleAdapter(this, schedule.getDay(WEEK_DAY),
+				true /* switch to preferences choice*/);
 		setListAdapter(mAdapter);
 	}
 
@@ -72,18 +66,11 @@ public class DailyScheduleListActivity extends ListActivity {
 	public void mBtnDelete_Click() {
 		Schedule ringSchedule = Service.getRingSchedule();
 
-		final int CHECKBOX_INDEX = 3;
-		final int TIME_TEXTBOX_INDEX = 1;
-		final int NBR_VIEWS_IN_ROW = 4;
-
-		LinearLayout row = null;
-		Time time = null;
+		LinearLayout row = null;		
 		CheckBox cb = null;
 		ListView lv = getListView();
-		int rowCount = lv.getCount();
-		int childCount = -1;
-		String strTime;
-		String[] hourMins;
+		int rowCount = lv.getCount();				
+		Long itemsTime;
 		// iterate over the views in the ListView
 		// and remove items from the schedule that
 		// have been checked by the user
@@ -91,23 +78,15 @@ public class DailyScheduleListActivity extends ListActivity {
 		// schedule object
 		for (int i = 0; i < rowCount; i++) {
 			row = (LinearLayout) lv.getChildAt(i);
-			if (row != null) {
-				childCount = row.getChildCount();
-				if (childCount == NBR_VIEWS_IN_ROW) {
-					cb = (CheckBox) row.getChildAt(CHECKBOX_INDEX);
-					if (cb.isChecked()) {
-						strTime = ((TextView) row.getChildAt(TIME_TEXTBOX_INDEX))
-								.getText().toString();
-						hourMins = strTime.split(":");
-						time = Utilities.normalizeToScharingTime(
-								Integer.parseInt(hourMins[0]),
-								Integer.parseInt(hourMins[1])
-			              );
-						ringSchedule.delRingSchedule(WEEK_DAY, 
-								time.toMillis(true));						
-						mAdapter.notifyDataSetChanged();						
-						//row.setVisibility(View.GONE);
-					}
+			if (row != null) {						
+				cb = (CheckBox) row.findViewById(R.id.CheckBox02);
+				if (cb.isChecked()) {
+					itemsTime = Long.parseLong(((TextView)	row
+							.findViewById(R.id.txtId)).getText().toString());				
+					
+					ringSchedule.delRingSchedule(WEEK_DAY, 
+							itemsTime);
+					mAdapter.notifyDataSetChanged();			
 				}
 			}
 		}

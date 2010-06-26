@@ -143,23 +143,24 @@ public class Service extends android.app.Service {
 	}
 
 	/**
-	 *Respond to system time advancements, occurs every one minute. If there is
+	 * Respond to system time advancements, occurs every one minute. If there is
 	 * a matching day/time in the schedule then change the ringer mode to the
 	 * mode in the schedule.
 	 **/
 	public class TimeTickListener extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			long millis = System.currentTimeMillis();
-
+			Time sysTime = new Time();
+			sysTime.set(System.currentTimeMillis());
+			int weekday = sysTime.weekDay;
+			sysTime = Utilities.normalizeToScharingTime(sysTime.hour, sysTime.minute);
+			Long millis = sysTime.toMillis(true);
+			
 			if (!setModeByCalEventEnd(millis)) {
 				if (!setModeByCalEventBegin(millis)) {					
-					Time t = new Time();
-					t.set(millis);
-					int weekday = t.weekDay;
 					if (mRingSchedule.hasTime(weekday, millis)) {
-						mAudioManager.setRingerMode(mRingSchedule
-								.getRingerMode(weekday, millis));
+						mAudioManager.setRingerMode(
+								mRingSchedule.getRingerMode(weekday, millis));
 						showRingChangeAlert();
 					}
 				}

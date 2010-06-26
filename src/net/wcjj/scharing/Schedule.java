@@ -38,8 +38,11 @@ import android.text.format.Time;
 
 /**
  * Schedule holds the days and times that the ringer mode will be changed. It
- * gets serialized when Service is closed and deserialized when it starts again
- * in order to retain the schedule across restarts.
+ * gets serialized when the service is closed and deserialized when it starts 
+ * again in order to retain the schedule across restarts.
+ * 
+ * When adding scheduled times it is import that the date is the epoch date of 
+ * 01/01/1970 and the seconds should be 00.
  */
 public class Schedule implements java.io.Serializable {
 
@@ -52,6 +55,8 @@ public class Schedule implements java.io.Serializable {
 	 */
 	private ArrayList<HashMap<Long, Integer>> mWeek;
 	private static final long serialVersionUID = 1L;
+	private final String BAD_TIME =
+		"The specified time is not a scheduled ring mode change.";
 
 	public static final String FILENAME = "schedule.obj";
 	public static final String SCHEDULED_TIME = "SCHEDULED_TIME";
@@ -78,6 +83,17 @@ public class Schedule implements java.io.Serializable {
 		}
 	}
 
+	/**
+	 * Add a ring change time and mode to the schedule.
+	 * 
+	 * @param ringerMode An integer that represents the android <b>AudioManager
+	 * </b> ringer mode constants silent, vibrate or ring.
+	 * @param dayOfWeek An integer that represents a day of the week 0=Sunday -
+	 * 6=Saturday.
+	 * @param startTime The time in millis to change the ringer mode
+	 * @throws IllegalArgumentException thrown when the startTime is already 
+	 * present in the schedule
+	 */
 	public void addRingSchedule(int ringerMode, int dayOfWeek, Long startTime)
 			throws IllegalArgumentException {
 		Time t = new Time();
@@ -88,40 +104,71 @@ public class Schedule implements java.io.Serializable {
 		mWeek.get(dayOfWeek).put(startTime, ringerMode);
 	}
 
+	/**
+	 * Delete a scheduled ring mode change.
+	 * 
+	 * @param dayOfWeek An integer that represents a day of the week 0=Sunday -
+	 * 6=Saturday.
+	 * @param startTime The time to delete from the schedule
+	 * @throws IllegalArgumentException if the schedule does not contain the 
+	 * specified time.
+	 */
 	public void delRingSchedule(int dayOfWeek, Long startTime)
 			throws IllegalArgumentException {
 		if (mWeek.get(dayOfWeek).containsKey(startTime)) {
 			mWeek.get(dayOfWeek).remove(startTime);
 		} else {
-			throw new IllegalArgumentException(startTime
-					+ " is not a scheduled ring mode change.");
+			throw new IllegalArgumentException(BAD_TIME);
 		}
 	}
 
+	/**
+	 * This method clears the entire ring schedule.
+	 */
 	public void delEntireSchedule() {
 		for (int i = 0; i < mWeek.size(); i++) {
 			mWeek.get(i).clear();
 		}
 	}
 
+	/**
+	 * This method changes the ring mode to change to for the time passed in 
+	 * as startTime
+	 * 
+	 * @param newRingMode An integer that represents the android <b>AudioManager
+	 * </b> ringer mode constants silent, vibrate or ring.
+	 * @param dayOfWeek An integer that represents a day of the week 0=Sunday -
+	 * 6=Saturday.
+	 * @param startTime The time in millis to change the ringer mode
+	 * @throws IllegalArgumentException thrown when the startTime is already 
+	 * present in the schedule
+	 */
 	public void updateRingSchedule(int dayOfWeek, Long startTime,
 			int newRingMode) throws IllegalArgumentException {
-		if (mWeek.get(dayOfWeek).containsKey(startTime)) {
+		if (hasTime(dayOfWeek, startTime)) {
 			delRingSchedule(dayOfWeek, startTime);
 			addRingSchedule(newRingMode, dayOfWeek, startTime);
 		} else {
-			throw new IllegalArgumentException(startTime
-					+ " is not a scheduled ring mode change.");
+			throw new IllegalArgumentException(BAD_TIME);
 		}
 	}
 
+	/**
+	 * Check to see if the schedule contains the indicated time.
+	 * 
+	 * @param dayOfWeek An integer that represents a day of the week 0=Sunday -
+	 * 6=Saturday.
+	 * @param startTime The time to delete from the schedule
+	 * @return A boolean that returns true if the schedule has the indicated 
+	 * time and false if it does not.
+	 */
 	public boolean hasTime(int dayOfWeek, Long startTime) {
 		return mWeek.get(dayOfWeek).containsKey(startTime);
 	}
 
 	public int getRingerMode(int dayOfWeek, Long startTime) {
-		if(!mWeek.get(dayOfWeek).containsKey(startTime))
-			return -1;
+		if(!hasTime(dayOfWeek, startTime))
+			throw new IllegalArgumentException(BAD_TIME);
 		return mWeek.get(dayOfWeek).get(startTime);
 	}
 
@@ -161,41 +208,5 @@ public class Schedule implements java.io.Serializable {
 		}
 
 	}
-		
-
-	/**
-	 * I could have extended a ListAdapter and created a way to handle Schedule
-	 * as it occurs in this class. I want to get this app to beta asap so I can
-	 * start using it so I am cheating and utilizing a quick fix by converting
-	 * the schedule to a format that the SimpleAdapter can handle out of the
-	 * box.
-	 * 
-	 * @param day
-	 *            The int value for the day of the week to return the Map
-	 * @return
-	 */
-//	public ArrayList<HashMap<String, String>> toSimpleAdapterMap(int day) {
-//		String[] ringModes = Utilities.RINGER_MODES_TEXT;
-//		ArrayList<HashMap<String, String>> list = 
-//			new ArrayList<HashMap<String, String>>();
-//		ArrayList<HashMap<Long, Integer>> week = mWeek;
-//
-//		// Hashmaps are not sorted, utilizing collection sorting so that
-//		// items are displayed in time asending order in the days listview.
-//		Vector<String> v = new Vector<String>(week.get(day).keySet());
-//		Collections.sort(v);
-//		Iterator<String> it = v.iterator();
-//
-//		while (it.hasNext()) {
-//			String key = it.next();
-//			HashMap<String, String> tempMap = new HashMap<String, String>(3);
-//			tempMap.put(SCHEDULE_DOW, String.valueOf(day));
-//			tempMap.put(SCHEDULED_TIME, key);
-//			tempMap.put(RINGER_MODE, ringModes[week.get(day).get(key)]);
-//			list.add(tempMap);
-//		}
-//
-//		return list;
-//	}
-
+	
 }
