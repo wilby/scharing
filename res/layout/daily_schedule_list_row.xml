@@ -7,13 +7,7 @@
 		      android:layout_height="wrap_content" 
 		      android:gravity="center"
 >
- 	
-	 	<TextView 	
-		android:id="@+id/txtId" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"
-		android:visibility="invisible" 
-		/>		
+ 	 	
 	 
 	    <TextView android:id="@+id/txtTime"       
 	         android:layout_width="wrap_content"
@@ -31,6 +25,13 @@
 			android:layout_marginRight="15dp"  
 		/>
 		
+			<TextView 	
+		android:id="@+id/txtId" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:width="25dp"
+		android:visibility="invisible" 
+		/>	
 		
 		<CheckBox android:text=""		 	 
 			android:id="@+id/CheckBox02"	
@@ -38,5 +39,7 @@
 			android:layout_height="wrap_content"
 		    android:gravity="right" 
 		/>	
+		
+		
 	
 </LinearLayout>

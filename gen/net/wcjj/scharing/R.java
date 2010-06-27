@@ -63,9 +63,9 @@ public final class R {
         public static final int tpTime=0x7f09000b;
         public static final int tvBatchDeleteMessages=0x7f090003;
         public static final int tvMessages=0x7f090010;
-        public static final int txtId=0x7f090005;
-        public static final int txtRingMode=0x7f090007;
-        public static final int txtTime=0x7f090006;
+        public static final int txtId=0x7f090007;
+        public static final int txtRingMode=0x7f090006;
+        public static final int txtTime=0x7f090005;
     }
     public static final class layout {
         public static final int batch_delete=0x7f030000;
