@@ -29,18 +29,23 @@ import android.content.Intent;
 import android.text.format.Time;
 import android.widget.TimePicker;
 
-public class Utilities {
-
-	private static final int RINGER_MODE_CHANGE_NOTIFY_ID = 1;
-	private static final String 
-	RINGER_MODE_CHANGE_NOTIFY_TAG =	"RINGER MODE CHANGED";	
+public class Utilities {		
+	
+	// The next three constants are keys in Scharing's SharedPreferences
 	public static final String PREFERENCES_FILENAME = "ScharingPreferences";
+	
 	public static final String PREFERENCES_FIELD_SHOW_ALERTS = "showAlerts";
-	public static final String PREFERENCES_FIELD_12_HOUR_CLOCK = "clock";
-	public static final int WEEKDAYS = 7;
-	public static final int WEEKENDS = 8;
+	
+	public static final String PREFERENCES_FIELD_12_HOUR_CLOCK = "clock";	
+	
+	/*
+	 * Ringer modes are actually integer values, the indexes of the strings 
+	 * in this array match the int values in AudioManager so they can be used
+	 * as output to the user.
+	 */
 	public static final String[] RINGER_MODES_TEXT = { "Silent", "Vibrate",
 			"Ring" };
+	
 	// Sunday - Saturday = 0-6, The following constants match the
 	// positions these selections occur in Scheduler.java's main.xml dropdown
 	// for days.
@@ -48,7 +53,18 @@ public class Utilities {
 			"Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
 			"Weekdays", "Weekend" };
 
+	/**
+	 * This a method for activities and the service to both use to for a 
+	 * standard notification message. 
+	 * 
+	 * @param context Android application context
+	 * @param message The message to display to the user in the notification.
+	 */
 	public static void scharingNotification(Context context, String message) {
+		final String 
+		RINGER_MODE_CHANGE_NOTIFY_TAG =	"RINGER MODE CHANGED";
+		final int RINGER_MODE_CHANGE_NOTIFY_ID = 1;
+		
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -65,28 +81,18 @@ public class Utilities {
 		n.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 		nm.notify(RINGER_MODE_CHANGE_NOTIFY_TAG, RINGER_MODE_CHANGE_NOTIFY_ID,
 				n);
-
-	}
-
-	public static String toScheduleTimeFormat(long systemTimeInMillis) {
-		Time t = new Time();
-		t.set(systemTimeInMillis);
-		String minutes = String.valueOf(t.minute);
-		// return time string in format [H]H:mm, military time 0-23
-		return String.valueOf(t.hour) + ":"
-				+ (minutes.length() == 1 ? "0" + minutes : minutes);
-	}
-
-	public static String toScheduleTimeFormat(TimePicker tp) {
-		String t = String.valueOf(tp.getCurrentHour())
-				+ ":"
-				+ (String.valueOf(tp.getCurrentMinute()).length() == 1 ? "0"
-						+ tp.getCurrentMinute().toString() : tp
-						.getCurrentMinute().toString());
-
-		return t;
 	}
 	
+	/**
+	 * This is a method that should be used across the entire porject to 
+	 * format times so they can be sorted by a TreeMap. If all the Time objects
+	 * have the same date and seconds then when converted to millis they will 
+	 * be in a natural, easy to sort format.
+	 * 
+	 * @param hour The hour value of the time object to be returned
+	 * @param min The minutes value of the time object to be returned
+	 * @return Time formatted to epoch with custom hour and min.
+	 */	
 	public static Time normalizeToScharingTime(int hour, int min) {
 		Time t = new Time();
 		//epoch day, custom hour and minutes

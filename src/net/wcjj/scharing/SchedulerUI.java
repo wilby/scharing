@@ -248,6 +248,10 @@ public class SchedulerUI extends Activity {
 	public void btnAddRingerChangeSchedule_Click(View v) {
 		int weekday, ringerMode;
 		Time startTime;
+		// The next two constants are the positions in the day dropdown for the 
+		//SchedulerUI
+		final int WEEKDAYS = 7;		
+		final int WEEKENDS = 8;
 
 		// Grab the views in the ui.
 		Spinner spWeekday = (Spinner) findViewById(R.id.spWeekday);
@@ -271,12 +275,12 @@ public class SchedulerUI extends Activity {
 		 * Convenience for the user. If they select Mon-Fri in spinner then we
 		 * add the schedule time to all weekdays. If weekends then Sat-Sun.
 		 */
-		if (weekday == Utilities.WEEKDAYS) {
+		if (weekday == WEEKDAYS) {
 			int mon = 1;
 			int fri = 5;
 			for (int i = mon; i <= fri; i++)
 				addSchedules(ringerMode, i, millis, tvMessages);
-		} else if (weekday == Utilities.WEEKENDS) {
+		} else if (weekday == WEEKENDS) {
 			int sat = 6;
 			int sun = 0;
 			addSchedules(ringerMode, sat, millis, tvMessages);

@@ -40,12 +40,12 @@ public class ServiceBootStrapper extends BroadcastReceiver {
 			Intent servIntent = new Intent(context,
 					net.wcjj.scharing.Service.class);
 			context.startService(servIntent);
-			// let the user know we are running in the background
+			
 			Log.i(TAG, "Scharing service starting");
-			Utilities.scharingNotification(context, context
-					.getString(R.string.bootstrap_message));
+			//Utilities.scharingNotification(context, context
+		   //		.getString(R.string.bootstrap_message));
 		} else {
-			Log.e(TAG, "Received unexpected intent at boot completed "
+			Log.e(TAG, "Received unexpected intent at boot "
 					+ intent.toString());
 		}
 	}
