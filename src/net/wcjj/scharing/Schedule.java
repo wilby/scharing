@@ -27,13 +27,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.TreeMap;
 
 import android.content.Context;
-import android.text.format.DateUtils;
 import android.text.format.Time;
 
 /**
@@ -53,7 +49,7 @@ public class Schedule implements java.io.Serializable {
 	 * 
 	 * @example: 0 = Sunday, 1 = Monday etc....
 	 */
-	private ArrayList<HashMap<Long, Integer>> mWeek;
+	private ArrayList<TreeMap<Long, Integer>> mWeek;
 	private static final long serialVersionUID = 1L;
 	private final String BAD_TIME =
 		"The specified time is not a scheduled ring mode change.";
@@ -67,19 +63,19 @@ public class Schedule implements java.io.Serializable {
 		return FILENAME;
 	}
 
-	public ArrayList<HashMap<Long, Integer>> getWeek() {
+	public ArrayList<TreeMap<Long, Integer>> getWeek() {
 		return mWeek;
 	}
 
-	public HashMap<Long, Integer> getDay(int dayOfWeek) {
+	public TreeMap<Long, Integer> getDay(int dayOfWeek) {
 		return mWeek.get(dayOfWeek);
 	}
 
 	public Schedule() {
 		int nbrDaysInWeek = 7;
-		mWeek = new ArrayList<HashMap<Long, Integer>>(nbrDaysInWeek);
+		mWeek = new ArrayList<TreeMap<Long, Integer>>(nbrDaysInWeek);
 		for (int i = 0; i < nbrDaysInWeek; i++) {
-			mWeek.add(i, new HashMap<Long, Integer>());
+			mWeek.add(i, new TreeMap<Long, Integer>());
 		}
 	}
 
@@ -192,7 +188,7 @@ public class Schedule implements java.io.Serializable {
 	}
 
 	public void saveSchedule(Context context) throws IOException {
-
+		
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
 

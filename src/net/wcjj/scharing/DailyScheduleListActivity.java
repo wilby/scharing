@@ -25,16 +25,13 @@ import java.io.IOException;
 
 import android.app.ListActivity;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class DailyScheduleListActivity extends ListActivity {
