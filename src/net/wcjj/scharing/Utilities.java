@@ -27,7 +27,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.text.format.Time;
-import android.widget.TimePicker;
 
 public class Utilities {		
 	

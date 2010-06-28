@@ -23,7 +23,14 @@ package net.wcjj.scharing;
 
 import java.io.IOException;
 
+import net.wcjj.scharing.SchedulerUI.ScharingShowAlertsStateListener;
+
 import android.app.ListActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -34,21 +41,39 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class DailyScheduleListActivity extends ListActivity {
+public class DailyScheduleListActivity extends ListActivity	{
 
 	public static int WEEK_DAY;
 	private DailyScheduleAdapter mAdapter;
 	private final String TAG = "Scharing_DailyScheduleListActivity";
+	private boolean mIs12Clock;
 
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		setContentView(R.layout.lv_container);
-
+		
+		registerReceiver(new BroadcastClockFormatListener(),
+				new IntentFilter(ScharingIntents.BROADCAST_CLOCK_FORMAT_12));
+		registerReceiver(new BroadcastClockFormatListener(),
+				new IntentFilter(ScharingIntents.BROADCAST_CLOCK_FORMAT_24));
+		
+		sendBroadcast(new Intent(ScharingIntents.REQUEST_CLOCK_FORMAT));
+		
 		this.setTitle(Utilities.DAYS_OF_WEEK_TEXT[WEEK_DAY]);
+		
+	}
+	
+	/**
+	 * A helper method. Had to seperate out of onCreate so it could be called 
+	 * after the broadcast intent was recieved back from Service, this code 
+	 * was executing before the listener recieved the intent and set the 
+	 * mIs12HourClock variable.
+	 */
+	private void dataBind() {
 		Schedule schedule = Service.getRingSchedule();
 		mAdapter = new DailyScheduleAdapter(this, schedule.getDay(WEEK_DAY),
-				true /* switch to preferences choice*/);
+				mIs12Clock);
 		setListAdapter(mAdapter);
 	}
 
@@ -106,5 +131,15 @@ public class DailyScheduleListActivity extends ListActivity {
 		}
 		return false;
 	}
+	
+	public class BroadcastClockFormatListener extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			mIs12Clock = intent.getAction().equals(
+					ScharingIntents.BROADCAST_CLOCK_FORMAT_12);	
+			dataBind();
+		}
+	}
+
 
 }

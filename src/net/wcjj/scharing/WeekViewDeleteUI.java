@@ -42,11 +42,9 @@ public class WeekViewDeleteUI extends Activity {
 	}
 
 	/**
-	 * A blanket listener for all the days of the week buttons to view that days
-	 * schedule.
-	 * 
-	 * @param v
-	 *            The button view
+	 * A listener for all days  to view that days schedule.
+	 *  
+	 * @param v The button view
 	 */
 	public void btn_Click(View v) {
 		Button b = (Button) v;
@@ -114,7 +112,10 @@ public class WeekViewDeleteUI extends Activity {
 			builder
 					.setTitle(R.string.week_view_delete_helpdialog_title)
 					.setMessage(
-							getString(R.string.week_view_delete_helpdialog_message))
+							getString(
+									R.string.week_view_delete_helpdialog_message
+							)
+					)
 					.setCancelable(false).setPositiveButton("Close",
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,

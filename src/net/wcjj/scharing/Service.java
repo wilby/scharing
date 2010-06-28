@@ -47,13 +47,15 @@ import java.util.Date;
  * to run constantly in the background. It is started on device boot or when the
  * UI is started.
  **/
-public class Service extends android.app.Service {
+public class Service extends android.app.Service implements IScharingPreferences
+{
 
 	private AudioManager mAudioManager;
 	private ArrayList<CalendarEvent> mActiveCalEvents;
 	private final String TAG = "Scharing_Service";
 
-	private static boolean mShowAlerts;
+	private boolean mShowAlerts;
+	private boolean mIs12HourClock;
 	private static Schedule mRingSchedule;
 
 	public static Schedule getRingSchedule() {
@@ -68,9 +70,15 @@ public class Service extends android.app.Service {
 				new IntentFilter(ScharingIntents.HIDE_SHARING_ALERTS));
 		registerReceiver(new ScharingSetAlertsListener(), 
 				new IntentFilter(ScharingIntents.SHOW_SHARING_ALERTS));
-		registerReceiver(new ScharingSetAlertsListener(), 
+		registerReceiver(new ShowAlertsStateListener(), 
 				new IntentFilter(ScharingIntents.REQUEST_SHOW_ALERTS_STATE));
-
+		registerReceiver(new RequestClockFormatListener(), 
+				new IntentFilter(ScharingIntents.REQUEST_CLOCK_FORMAT));
+		registerReceiver(new BroadCastClockListener(), 
+				new IntentFilter(ScharingIntents.BROADCAST_CLOCK_FORMAT_12));
+		registerReceiver(new BroadCastClockListener(), 
+				new IntentFilter(ScharingIntents.BROADCAST_CLOCK_FORMAT_24));
+		
 		mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 		mActiveCalEvents = new ArrayList<CalendarEvent>();
 
@@ -299,13 +307,14 @@ public class Service extends android.app.Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			mShowAlerts = intent.getAction().equals(
-					ScharingIntents.SHOW_SHARING_ALERTS) ? true : false;
+					ScharingIntents.SHOW_SHARING_ALERTS);
+			savePreferences();
 		}
 	}
 
 	/**
 	 * Listen for request of the state of showing scharing alerts. If a
-	 * broadcast is recieved respond with on of two intents letting the
+	 * broadcast is recieved respond with one of two intents letting the
 	 * requester know true or false
 	 */
 	public class ShowAlertsStateListener extends BroadcastReceiver {
@@ -318,20 +327,44 @@ public class Service extends android.app.Service {
 			}
 		}
 	}
-
-	private void loadPreferences() {
+	
+	public class RequestClockFormatListener extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (mIs12HourClock) {
+				sendBroadcast(
+						new Intent(ScharingIntents.BROADCAST_CLOCK_FORMAT_12));
+			} else {
+				sendBroadcast(
+						new Intent(ScharingIntents.BROADCAST_CLOCK_FORMAT_24));
+			}
+		} 
+	}	
+	
+	public class BroadCastClockListener extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			mIs12HourClock =
+			intent.getAction().equals(ScharingIntents.BROADCAST_CLOCK_FORMAT_12);
+			savePreferences();
+		}
+	}
+	
+	public void loadPreferences() {
 		SharedPreferences scharingPreferences = getSharedPreferences(
 				Utilities.PREFERENCES_FILENAME, MODE_PRIVATE);
 		mShowAlerts = scharingPreferences.getBoolean(
 				Utilities.PREFERENCES_FIELD_SHOW_ALERTS, true);
+		mIs12HourClock = scharingPreferences.getBoolean(
+				Utilities.PREFERENCES_FIELD_12_HOUR_CLOCK, true);
 	}
 
-	private void savePreferences() {
+	public void savePreferences() {
 		SharedPreferences scharingPreferences = getSharedPreferences(
 				Utilities.PREFERENCES_FILENAME, MODE_PRIVATE);
 		SharedPreferences.Editor editor = scharingPreferences.edit();
 		editor.putBoolean(Utilities.PREFERENCES_FIELD_SHOW_ALERTS, mShowAlerts);
-		editor.commit();
+		editor.commit();	
 	}
 
 }

@@ -25,6 +25,7 @@
     <string name="io_error">Saving schedule failed.</string>
     <string name="delete_success">Time deleted successfully from selected days</string>
     <string name="menu_showalerts">Show Alerts</string>
+    <string name="menu_clockformat">12 Hour Clock</string>
     <string name="delete_entire_schedule">Are you sure you want delete your entire weeks schedule?</string>    
     <string name="week_view_delete_menu_title">Help</string>
     <string name="week_view_delete_helpdialog_title">Deleting Scheduled Items</string>

@@ -43,7 +43,7 @@ import android.text.format.Time;
 public class Schedule implements java.io.Serializable {
 
 	/**
-	 *An array of HashMaps who's indexes mimic the days of the week as set up
+	 *An array of TreeMaps who's indexes mimic the days of the week as set up
 	 * in class android.text.format.Time. Each array index is the day it
 	 * represents.
 	 * 
