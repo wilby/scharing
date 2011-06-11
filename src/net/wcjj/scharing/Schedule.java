@@ -37,7 +37,7 @@ import android.text.format.Time;
  * gets serialized when the service is closed and deserialized when it starts 
  * again in order to retain the schedule across restarts.
  * 
- * When adding scheduled times it is import that the date is the epoch date of 
+ * When adding scheduled times it is important that the date is the epoch date of 
  * 01/01/1970 and the seconds should be 00.
  */
 public class Schedule implements java.io.Serializable {

@@ -33,6 +33,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.text.format.Time;
 import android.util.Log;
@@ -118,6 +119,9 @@ public class Service extends android.app.Service implements IScharingPreferences
 
 	@Override
 	public void onDestroy() {
+		// Save our schedule if the services is killed
+		saveSchedule();
+		savePreferences();
 		mRingSchedule = null;
 		mAudioManager = null;
 		mActiveCalEvents = null;
@@ -245,13 +249,37 @@ public class Service extends android.app.Service implements IScharingPreferences
 		}
 		return false;
 	}
-
+	
+	//helper to determine the android version so the proper calendar uri can be used
+	private Uri getCalendarUri() {
+		final Uri CALENDAR_CALENDARS_URI = Uri.parse("content://calendar/calendars");
+		final Uri CALENDAR_CALENDARS_URI_8_PLUS = Uri.parse("content://com.android.calendar/calendars");
+		
+	    if(Integer.parseInt(Build.VERSION.SDK) <= 7) {
+	        return CALENDAR_CALENDARS_URI;
+	    } else {
+	        return CALENDAR_CALENDARS_URI_8_PLUS;
+	    }
+	}
+	
+	private Uri.Builder getCalendarInstanceUri() {
+		final String CALENDAR_CALENDARS_INSTANCE_URI = "content://calendar/instances/when";
+		final String CALENDAR_CALENDARS_INSTANCE_URI_8_PLUS = "content://com.android.calendar/instances/when";
+		
+		if(Integer.parseInt(Build.VERSION.SDK) <= 7) {
+			return Uri.parse(CALENDAR_CALENDARS_INSTANCE_URI).buildUpon();
+	    } else {
+	    	return Uri.parse(CALENDAR_CALENDARS_INSTANCE_URI_8_PLUS).buildUpon();
+	    }
+		
+	
+	}
+	
 	private ArrayList<CalendarEvent> getTodaysCalEvents(long millis)
 			throws NullContentProviderException {
-
+		
 		ContentResolver contentResolver = this.getContentResolver();
-		final Cursor cursor = contentResolver.query(Uri
-				.parse("content://calendar/calendars"),
+		final Cursor cursor = contentResolver.query(getCalendarUri(),
 				(new String[] { "_id" }), null, null, null);
 
 		if (cursor == null)
@@ -264,8 +292,8 @@ public class Service extends android.app.Service implements IScharingPreferences
 			ids.add(cursor.getString(0));
 		}
 
-		Uri.Builder builder = Uri.parse("content://calendar/instances/when")
-				.buildUpon();
+		
+		Uri.Builder builder = getCalendarInstanceUri();
 
 		ContentUris.appendId(builder, millis);
 		ContentUris.appendId(builder, millis);
