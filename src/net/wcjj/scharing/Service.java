@@ -23,13 +23,7 @@
 
 package net.wcjj.scharing;
 
-import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;

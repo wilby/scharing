@@ -23,11 +23,7 @@ package net.wcjj.scharing;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.DialogInterface;
+import android.content.*;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
@@ -35,11 +31,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ScrollView;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.TimePicker;
+import android.widget.*;
 
 import java.io.IOException;
 

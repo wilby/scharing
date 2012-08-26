@@ -21,10 +21,6 @@
 
 package net.wcjj.scharing;
 
-import java.io.IOException;
-
-
-
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,6 +35,8 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.io.IOException;
 
 public class DailyScheduleListActivity extends ListActivity	{
 

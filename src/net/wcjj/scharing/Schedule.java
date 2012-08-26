@@ -21,16 +21,12 @@
 
 package net.wcjj.scharing;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.TreeMap;
-
 import android.content.Context;
 import android.text.format.Time;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.TreeMap;
 
 /**
  * Schedule holds the days and times that the ringer mode will be changed. It

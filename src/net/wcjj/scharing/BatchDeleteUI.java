@@ -1,17 +1,17 @@
 package net.wcjj.scharing;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.text.format.Time;
+
+import java.io.IOException;
 
 public class BatchDeleteUI extends Activity {
 
