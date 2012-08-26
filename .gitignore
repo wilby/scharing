@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 *~
 *#
 
+=======
+>>>>>>> 2f8e438f2a7b0cf5c9eb61d0c8c132afaa60856e
 # built application files
 *.apk
 *.ap_
@@ -16,4 +19,8 @@ bin/
 gen/
 
 # Local configuration file (sdk path, etc)
+<<<<<<< HEAD
 local.properties
+=======
+local.properties
+>>>>>>> 2f8e438f2a7b0cf5c9eb61d0c8c132afaa60856e
