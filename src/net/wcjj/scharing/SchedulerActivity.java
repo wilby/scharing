@@ -35,7 +35,7 @@ import android.widget.*;
 
 import java.io.IOException;
 
-public class SchedulerUI extends Activity {
+public class SchedulerActivity extends Activity {
 
 	private final String TAG = "SCHARING_SCHEDULER";
 	private boolean mShowAlerts;
@@ -225,7 +225,7 @@ public class SchedulerUI extends Activity {
 		try {
 			Service.getRingSchedule().saveSchedule(this);
 		} catch (IOException e) {
-			Log.e(TAG, "Error while saving schedulef from SchedulerUI.", e);
+			Log.e(TAG, "Error while saving schedulef from SchedulerActivity.", e);
 		}		
 	}
 
@@ -254,7 +254,7 @@ public class SchedulerUI extends Activity {
 		int weekday, ringerMode;
 		Time startTime;
 		// The next two constants are the positions in the day dropdown for the 
-		//SchedulerUI
+		//SchedulerActivity
 		final int WEEKDAYS = 7;		
 		final int WEEKENDS = 8;
 
@@ -315,7 +315,7 @@ public class SchedulerUI extends Activity {
 	 * @param v
 	 */
 	public void btnViewSchedules_Click(View v) {
-		Intent i = new Intent(this, WeekViewDeleteUI.class);
+		Intent i = new Intent(this, WeekViewDeleteActivity.class);
 		startActivity(i);
 	}
 	

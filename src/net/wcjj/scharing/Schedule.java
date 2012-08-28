@@ -36,7 +36,7 @@ import java.util.TreeMap;
  * When adding scheduled times it is important that the date is the epoch date of 
  * 01/01/1970 and the seconds should be 00.
  */
-public class Schedule implements java.io.Serializable {
+public class Schedule implements ISchedule {
 
 	/**
 	 *An array of TreeMaps who's indexes mimic the days of the week as set up
@@ -50,20 +50,18 @@ public class Schedule implements java.io.Serializable {
 	private final String BAD_TIME =
 		"The specified time is not a scheduled ring mode change.";
 
-	public static final String FILENAME = "schedule.obj";
-	public static final String SCHEDULED_TIME = "SCHEDULED_TIME";
-	public static final String RINGER_MODE = "RINGER_MODE";
-	public static final String SCHEDULE_DOW = "SCHEDULE_DOW";
-
-	public String getSchedulesFileNameOnDisk() {
+    @Override
+    public String getSchedulesFileNameOnDisk() {
 		return FILENAME;
 	}
 
-	public ArrayList<TreeMap<Long, Integer>> getWeek() {
+	@Override
+    public ArrayList<TreeMap<Long, Integer>> getWeek() {
 		return mWeek;
 	}
 
-	public TreeMap<Long, Integer> getDay(int dayOfWeek) {
+	@Override
+    public TreeMap<Long, Integer> getDay(int dayOfWeek) {
 		return mWeek.get(dayOfWeek);
 	}
 
@@ -86,7 +84,8 @@ public class Schedule implements java.io.Serializable {
 	 * @throws IllegalArgumentException thrown when the startTime is already 
 	 * present in the schedule
 	 */
-	public void addRingSchedule(int ringerMode, int dayOfWeek, Long startTime)
+	@Override
+    public void addRingSchedule(int ringerMode, int dayOfWeek, Long startTime)
 			throws IllegalArgumentException {
 		Time t = new Time();
 		t.set(startTime);
@@ -105,7 +104,8 @@ public class Schedule implements java.io.Serializable {
 	 * @throws IllegalArgumentException if the schedule does not contain the 
 	 * specified time.
 	 */
-	public void delRingSchedule(int dayOfWeek, Long startTime)
+	@Override
+    public void delRingSchedule(int dayOfWeek, Long startTime)
 			throws IllegalArgumentException {
 		if (mWeek.get(dayOfWeek).containsKey(startTime)) {
 			mWeek.get(dayOfWeek).remove(startTime);
@@ -117,7 +117,8 @@ public class Schedule implements java.io.Serializable {
 	/**
 	 * This method clears the entire ring schedule.
 	 */
-	public void delEntireSchedule() {
+	@Override
+    public void delEntireSchedule() {
 		for (int i = 0; i < mWeek.size(); i++) {
 			mWeek.get(i).clear();
 		}
@@ -135,8 +136,9 @@ public class Schedule implements java.io.Serializable {
 	 * @throws IllegalArgumentException thrown when the startTime is already 
 	 * present in the schedule
 	 */
-	public void updateRingSchedule(int dayOfWeek, Long startTime,
-			int newRingMode) throws IllegalArgumentException {
+	@Override
+    public void updateRingSchedule(int dayOfWeek, Long startTime,
+                                   int newRingMode) throws IllegalArgumentException {
 		if (hasTime(dayOfWeek, startTime)) {
 			delRingSchedule(dayOfWeek, startTime);
 			addRingSchedule(newRingMode, dayOfWeek, startTime);
@@ -154,11 +156,13 @@ public class Schedule implements java.io.Serializable {
 	 * @return A boolean that returns true if the schedule has the indicated 
 	 * time and false if it does not.
 	 */
-	public boolean hasTime(int dayOfWeek, Long startTime) {
+	@Override
+    public boolean hasTime(int dayOfWeek, Long startTime) {
 		return mWeek.get(dayOfWeek).containsKey(startTime);
 	}
 
-	public int getRingerMode(int dayOfWeek, Long startTime) {
+	@Override
+    public int getRingerMode(int dayOfWeek, Long startTime) {
 		if(!hasTime(dayOfWeek, startTime))
 			throw new IllegalArgumentException(BAD_TIME);
 		return mWeek.get(dayOfWeek).get(startTime);
@@ -183,7 +187,8 @@ public class Schedule implements java.io.Serializable {
 		}
 	}
 
-	public void saveSchedule(Context context) throws IOException {
+	@Override
+    public void saveSchedule(Context context) throws IOException {
 		
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;

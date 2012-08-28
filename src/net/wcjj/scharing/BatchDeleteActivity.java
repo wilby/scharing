@@ -13,7 +13,7 @@ import android.widget.TimePicker;
 
 import java.io.IOException;
 
-public class BatchDeleteUI extends Activity {
+public class BatchDeleteActivity extends Activity {
 
 	final String TAG = "Scharing_BatchDeleteUI";
 	private boolean mHighlightColor = false;

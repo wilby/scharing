@@ -32,7 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-public class WeekViewDeleteUI extends Activity {
+public class WeekViewDeleteActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class WeekViewDeleteUI extends Activity {
 	}
 
 	public void btnBatchDelete_Click(View v) {
-		Intent i = new Intent(this, BatchDeleteUI.class);
+		Intent i = new Intent(this, BatchDeleteActivity.class);
 		startActivity(i);
 	}
 
